@@ -1,6 +1,6 @@
 package io.dnpn.fundtransfer.account.accessor.impl;
 
-import io.dnpn.fundtransfer.ApplicationProfile;
+import io.dnpn.fundtransfer.common.ApplicationProfile;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

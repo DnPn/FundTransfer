@@ -1,4 +1,4 @@
-package io.dnpn.fundtransfer;
+package io.dnpn.fundtransfer.common;
 
 /**
  * The available Spring profiles for this application. This class simply holds the constant values so they can be

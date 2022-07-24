@@ -47,5 +47,12 @@ If the Spring profile is set to `dev` (see `spring.profiles.active` in `/resourc
 
 - mock accounts are created at startup (see the class `SqlAccountDevSetup`)
 
+### Swagger
+
+Once the application is started you can access the Swagger (OpenAPI version 3) via the following URLs:
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **Swagger JSON**: http://localhost:8080/v3/api-docs
+
 
 

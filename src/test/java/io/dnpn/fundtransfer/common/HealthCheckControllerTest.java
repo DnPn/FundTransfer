@@ -1,4 +1,4 @@
-package io.dnpn.fundtransfer;
+package io.dnpn.fundtransfer.common;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
