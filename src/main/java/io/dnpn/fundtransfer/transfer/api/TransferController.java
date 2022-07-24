@@ -1,5 +1,7 @@
 package io.dnpn.fundtransfer.transfer.api;
 
+import io.dnpn.fundtransfer.transfer.service.IllegalTransferException;
+import io.dnpn.fundtransfer.transfer.service.TransferFailureException;
 import io.dnpn.fundtransfer.transfer.service.TransferRequest;
 import io.dnpn.fundtransfer.transfer.service.TransferService;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +38,7 @@ public class TransferController {
     public ResponseEntity<TransferApiResponse> transfer(@RequestBody TransferApiRequest request) {
         log.info("Transfer request: {}", request);
 
-        final TransferRequest serviceRequest = toServiceRequest(request);
-        service.transfer(serviceRequest);
+        executeTransfer(request);
 
         final TransferApiResponse response = TransferApiResponse.builder()
                 .request(request)
@@ -79,6 +80,19 @@ public class TransferController {
                             "number.",
                     fieldValue, fieldName);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message, exception);
+        }
+    }
+
+    private void executeTransfer(TransferApiRequest request) {
+        try {
+            final TransferRequest serviceRequest = toServiceRequest(request);
+            service.transfer(serviceRequest);
+
+        } catch (IllegalTransferException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
+
+        } catch (TransferFailureException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception);
         }
     }
 }

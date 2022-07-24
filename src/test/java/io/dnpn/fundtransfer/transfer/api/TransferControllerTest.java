@@ -1,5 +1,7 @@
 package io.dnpn.fundtransfer.transfer.api;
 
+import io.dnpn.fundtransfer.transfer.service.IllegalTransferException;
+import io.dnpn.fundtransfer.transfer.service.TransferFailureException;
 import io.dnpn.fundtransfer.transfer.service.TransferRequest;
 import io.dnpn.fundtransfer.transfer.service.TransferService;
 import lombok.SneakyThrows;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -98,6 +101,7 @@ class TransferControllerTest {
         assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
     }
 
+    @SneakyThrows
     @Test
     void WHEN_transfer_THEN_serviceExecutesTheTransfer() {
         controller.transfer(API_REQUEST);
@@ -116,14 +120,39 @@ class TransferControllerTest {
     }
 
     @SneakyThrows
+    @Test
+    void GIVEN_illegalTransfer_WHEN_transfer_THEN_throwResponseStatusForBadRequest() {
+        doThrow(IllegalTransferException.class).when(service).transfer(SERVICE_REQUEST);
+
+        assertThrowsResponseStatusForBadRequest(() -> controller.transfer(API_REQUEST));
+    }
+
+    @SneakyThrows
+    @Test
+    void GIVEN_transferFailure_WHEN_transfer_THEN_throwResponseStatusForServerError() {
+        doThrow(TransferFailureException.class).when(service).transfer(SERVICE_REQUEST);
+
+        assertThrowsResponseStatusForServerError(() -> controller.transfer(API_REQUEST));
+    }
+
+
     private void assertThrowsResponseStatusForBadRequest(Executable executable) {
+        assertThrowsResponseStatus(executable, HttpStatus.BAD_REQUEST);
+    }
+
+    private void assertThrowsResponseStatusForServerError(Executable executable) {
+        assertThrowsResponseStatus(executable, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @SneakyThrows
+    private void assertThrowsResponseStatus(Executable executable, HttpStatus expectedStatus) {
         assertThrows(ResponseStatusException.class, executable);
 
         try {
             executable.execute();
 
         } catch (ResponseStatusException exception) {
-            assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+            assertEquals(expectedStatus, exception.getStatus());
         }
     }
 }
