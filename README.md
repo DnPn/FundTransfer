@@ -4,7 +4,9 @@
 
 Pet project with Spring Boot modelling a fund transfers between 2 accounts:
 
-- accounts are persisted in an in-memory H2 database (see `/account/impl`)
+- accounts are persisted in an in-memory H2 database (see `/account/accessor/impl`)
+- the exchange rate of currencies to a reference currency (USD) are persisted in an in-memory H2 database (see
+  `/currency/accessor/impl`)
 
 ---
 
@@ -46,6 +48,7 @@ can verify that you are querying the right port by verifying the parameter `serv
 If the Spring profile is set to `dev` (see `spring.profiles.active` in `/resources/application.properties`):
 
 - mock accounts are created at startup (see the class `SqlAccountDevSetup`)
+- mock exchange rates to USD are created at startup (see the class `SqlExchangeRateDevSetup`)
 
 ### Swagger
 
@@ -78,6 +81,3 @@ In the example below we can see in the logs that the request ID is `c05a8315-547
 
 This request ID is retrieved from the request header `Request-Id` if existing, otherwise it is generated. It is then
 set in the same header in the response. 
-
-
-

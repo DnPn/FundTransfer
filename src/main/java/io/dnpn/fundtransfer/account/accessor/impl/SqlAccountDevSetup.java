@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Create mock accounts for a development environment.
+ */
 @Slf4j
 @Profile(ApplicationProfile.DEV)
 @Configuration
