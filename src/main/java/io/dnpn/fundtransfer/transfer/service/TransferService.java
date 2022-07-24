@@ -6,6 +6,7 @@ import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 /**
  * Service to perform a fund transfer between 2 accounts.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransferService {
@@ -33,15 +35,21 @@ public class TransferService {
     public void transfer(@NonNull TransferRequest request) throws IllegalTransferException, TransferFailureException {
         final BigDecimal debitedAmount = request.amount();
         assertValidAmount(debitedAmount);
+        log.debug("Transfer amount {} is valid.", debitedAmount);
 
         final Account debitAccount = getAccountById(request.fromAccountId());
         assertSufficientBalance(debitAccount, debitedAmount);
+        log.debug("The balance of the debit account is sufficient for the transfer.");
 
         final Account creditAccount = getAccountById(request.toAccountId());
         final BigDecimal creditedAmount = calculateDebitedAmount(debitAccount, creditAccount, debitedAmount);
 
         debitAccount(debitAccount, debitedAmount);
         creditAccount(creditAccount, creditedAmount);
+        log.debug("Transfer completed: {} {} debited from the account {} | {} {} credited to the account {}",
+                debitedAmount, debitAccount.getCurrency(), debitAccount.getAccountId(),
+                creditedAmount, creditAccount.getCurrency(), creditAccount.getAccountId()
+        );
     }
 
     private Account getAccountById(long accountId) throws IllegalTransferException {
