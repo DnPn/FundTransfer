@@ -59,6 +59,46 @@ Once the application is started you can access the Swagger (OpenAPI version 3) v
 
 ---
 
+## Example
+
+Here are example of queries executed with the `dev` profile enabled just after the startup of the application:
+
+1. list the accounts:
+
+- run `curl -L -X GET 'http://localhost:8080/accounts'`
+
+2. check a given account:
+
+- run `curl -L -X GET 'http://localhost:8080/account/123'`
+
+3. try to make a transfer to a non-existing account:
+
+- no account is register with the ID `999`
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "999", "amount": "587.21"}'`
+
+4. try to make a transfer between accounts with an unsupported currency:
+
+- the exchange rate of `AUD` is not registered
+- the account `456` uses the currency `AUD`
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "456", "amount": "587.21"}'`
+
+5. try to make a transfer with an amount greater than the balance of the debit account:
+
+- the amount `1500` is greater than the initial balance of the account `123`
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "789", "amount": "1500"}'`
+
+6. make a valid transfer:
+
+- the amount `587.21` is less than the initial balance of the account `123`
+- the accounts `123` and `789` have their currencies registered in the dev database
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "789", "amount": "587.21"}'`
+
+---
+
 ## Troubleshooting
 
 ### Identifying a request
