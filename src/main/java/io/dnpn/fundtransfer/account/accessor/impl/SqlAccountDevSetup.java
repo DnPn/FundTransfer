@@ -1,4 +1,4 @@
-package io.dnpn.fundtransfer.account.impl;
+package io.dnpn.fundtransfer.account.accessor.impl;
 
 import io.dnpn.fundtransfer.ApplicationProfile;
 import io.dnpn.fundtransfer.currency.Currency;

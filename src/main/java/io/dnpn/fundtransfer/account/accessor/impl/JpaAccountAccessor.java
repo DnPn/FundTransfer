@@ -1,4 +1,4 @@
-package io.dnpn.fundtransfer.account.impl;
+package io.dnpn.fundtransfer.account.accessor.impl;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

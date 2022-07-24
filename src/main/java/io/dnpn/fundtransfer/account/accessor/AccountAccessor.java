@@ -1,5 +1,6 @@
-package io.dnpn.fundtransfer.account;
+package io.dnpn.fundtransfer.account.accessor;
 
+import io.dnpn.fundtransfer.account.Account;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

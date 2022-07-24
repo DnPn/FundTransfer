@@ -1,7 +1,7 @@
-package io.dnpn.fundtransfer.account.impl;
+package io.dnpn.fundtransfer.account.accessor.impl;
 
 import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.AccountAccessor;
+import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
