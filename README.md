@@ -39,7 +39,13 @@ Date: Sun, 24 Jul 2022 13:00:57 GMT
 
 If it is not the case verify in the console where you launched the application that there is no exception. Also you
 can verify that you are querying the right port by verifying the parameter `server.port` in
-`/src/main/resources/application.properties`.
+`/resources/application.properties`.
+
+### Profiles
+
+If the Spring profile is set to `dev` (see `spring.profiles.active` in `/resources/application.properties`):
+
+- mock accounts are created at startup (see the class `SqlAccountDevSetup`)
 
 
 
