@@ -3,7 +3,7 @@ package io.dnpn.fundtransfer.transfer.service;
 import io.dnpn.fundtransfer.account.Account;
 import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
 import io.dnpn.fundtransfer.currency.Currency;
-import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
+import io.dnpn.fundtransfer.currency.accessor.ExchangeRateException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransferServiceTest {
@@ -101,6 +100,15 @@ class TransferServiceTest {
 
     @SneakyThrows
     @Test
+    void GIVEN_exchangeRateException_WHEN_transfer_THEN_throwsTransferFailure() {
+        mockValidAccountAccess();
+        doThrow(ExchangeRateException.class).when(conversionService).convert(any());
+
+        assertThrows(TransferFailureException.class, () -> transferService.transfer(REQUEST));
+    }
+
+    @SneakyThrows
+    @Test
     void WHEN_transfer_THEN_executeDebit() {
         mockValidAccountAccess();
         mockAmountConversion();
@@ -130,14 +138,11 @@ class TransferServiceTest {
         doReturn(Optional.of(creditAccount)).when(accountAccessor).getById(CREDIT_ACCOUNT_ID);
     }
 
+
+    @SneakyThrows
     private BigDecimal mockAmountConversion() {
         BigDecimal convertedAmount = new BigDecimal("147.89");
-        CurrencyConversionRequest conversionRequest = CurrencyConversionRequest.builder()
-                .fromCurrency(debitAccount.getCurrency())
-                .toCurrency(creditAccount.getCurrency())
-                .amount(AMOUNT)
-                .build();
-        doReturn(convertedAmount).when(conversionService).convert(conversionRequest);
+        doReturn(convertedAmount).when(conversionService).convert(any());
         return convertedAmount;
     }
 }
