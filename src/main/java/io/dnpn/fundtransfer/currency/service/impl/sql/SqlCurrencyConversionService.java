@@ -4,9 +4,11 @@ import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
+import io.dnpn.fundtransfer.currency.service.impl.CurrencyConversionProperty;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +16,10 @@ import java.math.BigDecimal;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(
+        name = CurrencyConversionProperty.MODE,
+        havingValue = CurrencyConversionProperty.SQL_MODE
+)
 public class SqlCurrencyConversionService implements CurrencyConversionService {
 
     private final JpaExchangeRateAccessor jpaAccessor;

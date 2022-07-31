@@ -4,6 +4,7 @@ import io.dnpn.fundtransfer.common.ApplicationProfile;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @Profile(ApplicationProfile.DEV)
 @Configuration
+@ConditionalOnBean(SqlCurrencyConversionService.class)
 public class SqlExchangeRateDevSetup {
 
     @Bean

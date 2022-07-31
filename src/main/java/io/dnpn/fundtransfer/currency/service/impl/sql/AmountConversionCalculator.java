@@ -3,6 +3,7 @@ package io.dnpn.fundtransfer.currency.service.impl.sql;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.math.MathContext;
  */
 @Slf4j
 @Component
+@ConditionalOnBean(SqlCurrencyConversionService.class)
 class AmountConversionCalculator {
 
     private static final int DIVISION_PRECISION = 10;
