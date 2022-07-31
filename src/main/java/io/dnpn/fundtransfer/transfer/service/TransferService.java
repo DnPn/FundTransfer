@@ -2,7 +2,7 @@ package io.dnpn.fundtransfer.transfer.service;
 
 import io.dnpn.fundtransfer.account.Account;
 import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
-import io.dnpn.fundtransfer.currency.accessor.ExchangeRateException;
+import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
 import lombok.NonNull;
@@ -95,7 +95,7 @@ public class TransferService {
                     .build();
             return conversionService.convert(request);
 
-        } catch (ExchangeRateException exception) {
+        } catch (CurrencyConversionException exception) {
             final String message = String.format("Unsupported currency conversion from %s to %s.",
                     debitAccount.getCurrency(), creditAccount.getCurrency());
             throw new TransferFailureException(message, exception);

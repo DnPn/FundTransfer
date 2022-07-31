@@ -3,7 +3,7 @@ package io.dnpn.fundtransfer.transfer.service;
 import io.dnpn.fundtransfer.account.Account;
 import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
 import io.dnpn.fundtransfer.currency.Currency;
-import io.dnpn.fundtransfer.currency.accessor.ExchangeRateException;
+import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,9 +100,9 @@ class TransferServiceTest {
 
     @SneakyThrows
     @Test
-    void GIVEN_exchangeRateException_WHEN_transfer_THEN_throwsTransferFailure() {
+    void GIVEN_currencyConversionException_WHEN_transfer_THEN_throwsTransferFailure() {
         mockValidAccountAccess();
-        doThrow(ExchangeRateException.class).when(conversionService).convert(any());
+        doThrow(CurrencyConversionException.class).when(conversionService).convert(any());
 
         assertThrows(TransferFailureException.class, () -> transferService.transfer(REQUEST));
     }

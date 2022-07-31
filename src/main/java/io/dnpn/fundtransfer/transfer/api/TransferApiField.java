@@ -13,6 +13,6 @@ public final class TransferApiField {
     public static final String MESSAGE = "message";
 
     private TransferApiField() {
-        
+
     }
 }
