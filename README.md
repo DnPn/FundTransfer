@@ -4,9 +4,9 @@
 
 Pet project with Spring Boot modelling a fund transfers between 2 accounts:
 
-- accounts are persisted in an in-memory H2 database (see `/account/accessor/impl`)
-- the exchange rate of currencies to a reference currency (USD) are persisted in an in-memory H2 database (see
-  `/currency/accessor/impl`)
+- accounts are persisted in an in-memory H2 database (see `/account/accessor/impl`).
+- the exchange rates can either be retrieved from an in-memory H2 database or from an external API (see the section
+  `Running the application` > `Currency conversion` of this documentation).
 
 ---
 
@@ -57,6 +57,25 @@ Once the application is started you can access the Swagger (OpenAPI version 3) v
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **Swagger JSON**: http://localhost:8080/v3/api-docs
 
+### Currency conversion
+
+The exchange rate of currencies implementation can be chosen by setting the value of `currencyConversion.mode` in
+the file `application.properties`:
+
+- if set to `sql`, the exchange rates to a reference currency (USD) are persisted in an in-memory H2 database (see
+  `/currency/service/impl/sql`)
+- if set to `api`, the currency conversion is retrieved from the `exchangerates` API (see https://exchangeratesapi.io/).
+
+#### API
+
+If you decide to use the API then you have to set the property `currencyConversion.api.key` in the file `application.
+properties`.
+
+You can get an API key
+by [subscribing to the `exchangerates` API](https://apilayer.com/marketplace/exchangerates_data-api#pricing).
+For testing purpose you can use the free tier and retrieve your API key
+in [your account settings](https://apilayer.com/account).
+
 ---
 
 ## Example
@@ -77,12 +96,15 @@ Here are example of queries executed with the `dev` profile enabled just after t
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
   {"fromAccount": "123", "toAccount": "999", "amount": "587.21"}'`
 
-4. try to make a transfer between accounts with an unsupported currency:
+4. try to make a transfer between accounts with an unsupported currency (*you cannot test this scenario if you are
+   using the API implementation since the API supports the `JPY` currency*):
 
 - the exchange rate of `JPY` is not registered
 - the account `789` uses the currency `JPY`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
   {"fromAccount": "123", "toAccount": "789", "amount": "587.21"}'`
+- ***Note**: you cannot test this scenario if you are using the API implementation since the API supports the `JPY`
+  currency*
 
 5. try to make a transfer between accounts with the same currency (even if the currency is not known by the exchange
    rate system):
