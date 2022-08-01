@@ -1,6 +1,7 @@
 package io.dnpn.fundtransfer.transfer.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -15,7 +16,13 @@ import java.time.LocalDateTime;
  */
 @Builder
 public record TransferApiResponse(
-        @JsonProperty(TransferApiField.REQUEST) @NonNull TransferApiRequest request,
-        @JsonProperty(TransferApiField.MESSAGE) @NonNull String message,
-        @JsonProperty(TransferApiField.TIMESTAMP) @NonNull LocalDateTime timestamp) {
+        @JsonProperty(TransferApiField.REQUEST)
+        @NonNull TransferApiRequest request,
+
+        @Schema(example = TransferController.SUCCESSFUL_TRANSFER_MESSAGE)
+        @JsonProperty(TransferApiField.MESSAGE)
+        @NonNull String message,
+
+        @JsonProperty(TransferApiField.TIMESTAMP)
+        @NonNull LocalDateTime timestamp) {
 }

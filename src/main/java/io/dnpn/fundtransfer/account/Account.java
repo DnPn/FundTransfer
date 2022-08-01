@@ -1,10 +1,14 @@
 package io.dnpn.fundtransfer.account;
 
 import io.dnpn.fundtransfer.currency.Currency;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 
@@ -17,14 +21,19 @@ public class Account {
     /**
      * The unique identifier of the account.
      */
-    @NonNull
+    @Schema(example = "123")
+    @Positive
     final long accountId;
     /**
      * The currency used for the account.
      */
+    @Schema(example = "USD")
+    @Pattern(regexp = "[A-Z]{3}")
     @NonNull Currency currency;
     /**
      * The balance of the account.
      */
+    @Schema(example = "123.45")
+    @DecimalMin(value = "0", inclusive = false)
     @NonNull BigDecimal balance;
 }

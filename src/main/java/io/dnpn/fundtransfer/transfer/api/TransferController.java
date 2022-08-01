@@ -5,6 +5,10 @@ import io.dnpn.fundtransfer.transfer.service.IllegalTransferException;
 import io.dnpn.fundtransfer.transfer.service.TransferFailureException;
 import io.dnpn.fundtransfer.transfer.service.TransferRequest;
 import io.dnpn.fundtransfer.transfer.service.TransferService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
@@ -38,6 +41,16 @@ public class TransferController {
      * @param request the fund transfer request.
      * @return a response indicating if the operation was successful.
      */
+    @Operation(description = "Executes a fund transfer from one account to another.", responses =
+            {
+                    @ApiResponse(responseCode = "200", description = "Transfer is successful.",
+                            content = {@Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = TransferApiResponse.class))}),
+
+                    @ApiResponse(responseCode = "400", description = "Invalid request.",
+                            content = {@Content(mediaType = "application/json",
+                                    schema = @Schema(example = "No account found with the identifier XYZ."))})
+            })
     @PostMapping("/transfer")
     public ResponseEntity<TransferApiResponse> transfer(@RequestBody TransferApiRequest request) {
         log.info("Transfer request: {}", request);
@@ -55,12 +68,11 @@ public class TransferController {
     private TransferRequest toServiceRequest(TransferApiRequest apiRequest) {
         final long fromAccountId = convertToLong(TransferApiField.FROM_ACCOUNT, apiRequest.fromAccount());
         final long toAccountId = convertToLong(TransferApiField.TO_ACCOUNT, apiRequest.toAccount());
-        final BigDecimal amount = convertToBigDecimal(TransferApiField.AMOUNT, apiRequest.amount());
 
         return TransferRequest.builder()
                 .fromAccountId(fromAccountId)
                 .toAccountId(toAccountId)
-                .amount(amount)
+                .amount(apiRequest.amount())
                 .build();
     }
 
@@ -70,18 +82,6 @@ public class TransferController {
 
         } catch (NumberFormatException exception) {
             final String message = String.format("Invalid value <%s> for the field <%s>: must be a valid integer.",
-                    fieldValue, fieldName);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message, exception);
-        }
-    }
-
-    private BigDecimal convertToBigDecimal(String fieldName, String fieldValue) {
-        try {
-            return new BigDecimal(fieldValue);
-
-        } catch (NumberFormatException exception) {
-            final String message = String.format("Invalid value <%s> for the field <%s>:  must be a valid decimal " +
-                            "number.",
                     fieldValue, fieldName);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message, exception);
         }

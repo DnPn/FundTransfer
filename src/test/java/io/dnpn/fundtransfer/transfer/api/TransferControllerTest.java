@@ -36,16 +36,16 @@ class TransferControllerTest {
 
     private static final String DEBIT_ACCOUNT_AS_STRING = "123";
     private static final String CREDIT_ACCOUNT_AS_STRING = "456";
-    private static final String AMOUNT_AS_STRING = "123.45";
+    private static final BigDecimal AMOUNT = new BigDecimal("123.45");
     private static final TransferApiRequest API_REQUEST = TransferApiRequest.builder()
             .fromAccount(DEBIT_ACCOUNT_AS_STRING)
             .toAccount(CREDIT_ACCOUNT_AS_STRING)
-            .amount(AMOUNT_AS_STRING)
+            .amount(AMOUNT)
             .build();
     private static final TransferRequest SERVICE_REQUEST = TransferRequest.builder()
             .fromAccountId(123)
             .toAccountId(456)
-            .amount(new BigDecimal(AMOUNT_AS_STRING))
+            .amount(AMOUNT)
             .build();
     private static final LocalDateTime NOW = LocalDateTime.of(2022, Month.APRIL, 14, 9, 50, 23);
     private static final ZoneId ZONE_ID = ZoneId.of("UTC+4");
@@ -72,7 +72,7 @@ class TransferControllerTest {
         TransferApiRequest request = TransferApiRequest.builder()
                 .fromAccount(debitAccountId)
                 .toAccount(CREDIT_ACCOUNT_AS_STRING)
-                .amount(AMOUNT_AS_STRING)
+                .amount(AMOUNT)
                 .build();
         assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
     }
@@ -83,18 +83,7 @@ class TransferControllerTest {
         TransferApiRequest request = TransferApiRequest.builder()
                 .fromAccount(DEBIT_ACCOUNT_AS_STRING)
                 .toAccount(creditAccountId)
-                .amount(AMOUNT_AS_STRING)
-                .build();
-        assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
-    }
-
-    @ParameterizedTest
-    @MethodSource(METHOD_SOURCE_INVALID_BIG_DECIMAL)
-    void WHEN_amountIsNotBigDecimal_THEN_throwResponseStatusForBadRequest(String amount) {
-        TransferApiRequest request = TransferApiRequest.builder()
-                .fromAccount(DEBIT_ACCOUNT_AS_STRING)
-                .toAccount(CREDIT_ACCOUNT_AS_STRING)
-                .amount(amount)
+                .amount(AMOUNT)
                 .build();
         assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
     }
