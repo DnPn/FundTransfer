@@ -30,8 +30,10 @@ public class CurrencyConversionProperty {
     public static final String SQL_MODE = "sql";
     public static final String API_MODE = "api";
 
-    private static final String API_KEY = API_PREFIX + "key";
-    private static final String API_BASE_URL = API_PREFIX + "baseUrl";
+    @VisibleForTesting
+    static final String API_KEY = API_PREFIX + "key";
+    @VisibleForTesting
+    static final String API_BASE_URL = API_PREFIX + "baseUrl";
     @VisibleForTesting
     static final String API_REQUEST_TIMEOUT = API_PREFIX + "requestTimeoutMs";
 

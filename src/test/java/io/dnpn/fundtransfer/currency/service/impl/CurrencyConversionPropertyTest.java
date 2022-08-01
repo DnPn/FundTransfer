@@ -17,6 +17,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
 class CurrencyConversionPropertyTest {
 
+    private static final String SOME_PROPERTY_VALUE = "something";
     private static final long VALID_TIMEOUT_VALUE = 1234;
     private static final String INVALID_TIMEOUT_VALUE = "abc";
 
@@ -24,6 +25,28 @@ class CurrencyConversionPropertyTest {
     private Environment environment;
     @InjectMocks
     private CurrencyConversionProperty accessor;
+
+    @Test
+    void WHEN_getApiKey_THEN_returnPropertyValue() {
+        doReturn(SOME_PROPERTY_VALUE)
+                .when(environment)
+                .getProperty(CurrencyConversionProperty.API_KEY);
+
+        var actualValue = accessor.getApiKey();
+
+        assertEquals(SOME_PROPERTY_VALUE, actualValue);
+    }
+
+    @Test
+    void WHEN_getBaseUrl_THEN_returnPropertyValue() {
+        doReturn(SOME_PROPERTY_VALUE)
+                .when(environment)
+                .getProperty(CurrencyConversionProperty.API_BASE_URL);
+
+        var actualValue = accessor.getApiBaseUrl();
+
+        assertEquals(SOME_PROPERTY_VALUE, actualValue);
+    }
 
     @Test
     void GIVEN_propertyNotSet_WHEN_getApiRequestTimeout_THEN_returnDefaultValue() {
