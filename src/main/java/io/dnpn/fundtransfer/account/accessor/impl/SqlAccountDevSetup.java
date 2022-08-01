@@ -1,6 +1,7 @@
 package io.dnpn.fundtransfer.account.accessor.impl;
 
 import io.dnpn.fundtransfer.common.ApplicationProfile;
+import io.dnpn.fundtransfer.common.annotation.ExcludeFromJacocoGeneratedReport;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @Profile(ApplicationProfile.DEV)
 @Configuration
+@ExcludeFromJacocoGeneratedReport(reason = "This class is used only in a dev environment to generate stub data.")
 public class SqlAccountDevSetup {
 
     @Bean

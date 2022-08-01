@@ -1,6 +1,7 @@
 package io.dnpn.fundtransfer.currency.service.impl.sql;
 
 import io.dnpn.fundtransfer.common.ApplicationProfile;
+import io.dnpn.fundtransfer.common.annotation.ExcludeFromJacocoGeneratedReport;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +21,7 @@ import java.util.List;
 @Profile(ApplicationProfile.DEV)
 @Configuration
 @ConditionalOnBean(SqlCurrencyConversionService.class)
+@ExcludeFromJacocoGeneratedReport(reason = "This class is used only in a dev environment to generate stub data.")
 public class SqlExchangeRateDevSetup {
 
     @Bean
