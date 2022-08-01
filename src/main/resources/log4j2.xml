@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
             <PatternLayout
                     pattern="%style{%d{ISO8601}} %highlight{%-5level }[%style{%t}{bright,blue}] [%X{requestId}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
         </Console>
@@ -13,6 +13,7 @@
         </Root>
 
         <Logger name="io.dnpn.fundtransfer.account" level="DEBUG"></Logger>
+        <Logger name="io.dnpn.fundtransfer.currency" level="DEBUG"></Logger>
         <Logger name="io.dnpn.fundtransfer.transfer" level="DEBUG"></Logger>
     </Loggers>
 

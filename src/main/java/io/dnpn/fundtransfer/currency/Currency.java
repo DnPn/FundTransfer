@@ -5,6 +5,7 @@ package io.dnpn.fundtransfer.currency;
  */
 public enum Currency {
     EUR,
+    GBP,
     USD,
     CAD,
     AUD,

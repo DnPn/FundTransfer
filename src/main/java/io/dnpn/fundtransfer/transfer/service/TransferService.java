@@ -98,6 +98,7 @@ public class TransferService {
         } catch (CurrencyConversionException exception) {
             final String message = String.format("Unsupported currency conversion from %s to %s.",
                     debitAccount.getCurrency(), creditAccount.getCurrency());
+            log.error(message, exception);
             throw new TransferFailureException(message, exception);
         }
     }
