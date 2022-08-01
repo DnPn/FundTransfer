@@ -21,8 +21,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SqlCurrencyConversionServiceTest {
     private static final BigDecimal AMOUNT = new BigDecimal("123.45");
-    private static final Currency SOURCE_CURRENCY = Currency.EUR;
-    private static final Currency TARGET_CURRENCY = Currency.AUD;
+    private static final Currency SOURCE_CURRENCY = Currency.GBP;
+    private static final Currency TARGET_CURRENCY = Currency.JPY;
     private static final CurrencyConversionRequest REQUEST = CurrencyConversionRequest.builder()
             .fromCurrency(SOURCE_CURRENCY)
             .toCurrency(TARGET_CURRENCY)
@@ -105,7 +105,7 @@ class SqlCurrencyConversionServiceTest {
     }
 
     private CurrencyConversionRequest buildRequestWithSameCurrency(BigDecimal amount) {
-        Currency currency = Currency.EUR;
+        Currency currency = Currency.GBP;
         return CurrencyConversionRequest.builder()
                 .amount(amount)
                 .toCurrency(currency)

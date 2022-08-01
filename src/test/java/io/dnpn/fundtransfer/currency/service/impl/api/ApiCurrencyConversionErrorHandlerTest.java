@@ -25,8 +25,8 @@ class ApiCurrencyConversionErrorHandlerTest {
 
     private static final String ERRORS_WITH_DETAILS_MESSAGE_METHOD_SOURCE = "errorsWithDetailMessageProvider";
     private static final CurrencyConversionRequest REQUEST = CurrencyConversionRequest.builder()
-            .fromCurrency(Currency.EUR)
-            .toCurrency(Currency.CNY)
+            .fromCurrency(Currency.GBP)
+            .toCurrency(Currency.JPY)
             .amount(BigDecimal.ONE)
             .build();
 

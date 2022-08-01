@@ -19,15 +19,15 @@ class AmountConversionCalculatorTest {
 
     private static final BigDecimal AMOUNT = new BigDecimal("12345.67");
     private static final JpaExchangeRateEntity SOURCE_RATE = JpaExchangeRateEntity.builder()
-            .rateToUsd(new BigDecimal("1.02"))
-            .currency(Currency.EUR)
+            .rateToUsd(new BigDecimal("1.23"))
+            .currency(Currency.GBP)
             .build();
     private static final JpaExchangeRateEntity TARGET_RATE = JpaExchangeRateEntity.builder()
-            .rateToUsd(new BigDecimal("0.69"))
-            .currency(Currency.AUD)
+            .rateToUsd(new BigDecimal("0.0076"))
+            .currency(Currency.JPY)
             .build();
     // calculated amount using the constants defined above: AMOUNT, SOURCE_RATE and TARGET_RATE
-    private static final BigDecimal EXPECTED_CONVERTED_AMOUNT = new BigDecimal("18250.12");
+    private static final BigDecimal EXPECTED_CONVERTED_AMOUNT = new BigDecimal("1998049.22");
 
     private static final String METHOD_SOURCE_INVALID_RATE_TO_USD = "provideInvalidRateToUsd";
 

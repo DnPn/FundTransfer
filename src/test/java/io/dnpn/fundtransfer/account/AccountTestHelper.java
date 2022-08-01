@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public final class AccountTestHelper {
 
     public static final long ID_ACCOUNT_A = 123;
-    public static final Currency CURRENCY_ACCOUNT_A = Currency.EUR;
+    public static final Currency CURRENCY_ACCOUNT_A = Currency.GBP;
     public static final BigDecimal BALANCE_ACCOUNT_A = new BigDecimal("100.50");
     public static final Account ACCOUNT_A = Account.builder()
             .accountId(ID_ACCOUNT_A)

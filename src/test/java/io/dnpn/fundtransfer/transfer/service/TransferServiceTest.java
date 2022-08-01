@@ -48,7 +48,7 @@ class TransferServiceTest {
     void beforeEach() {
         this.debitAccount = Account.builder()
                 .accountId(DEBIT_ACCOUNT_ID)
-                .currency(Currency.EUR)
+                .currency(Currency.GBP)
                 .balance(AMOUNT.add(BigDecimal.ONE))
                 .build();
         this.creditAccount = Account.builder()

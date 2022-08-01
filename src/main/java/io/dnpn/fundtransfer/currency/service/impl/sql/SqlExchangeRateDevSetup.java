@@ -34,28 +34,13 @@ public class SqlExchangeRateDevSetup {
 
     private void createMockExchangeRates(JpaExchangeRateAccessor accessor) {
         accessor.save(JpaExchangeRateEntity.builder()
-                .currency(Currency.EUR)
-                .rateToUsd(new BigDecimal("1.02"))
-                .build());
-
-        accessor.save(JpaExchangeRateEntity.builder()
-                .currency(Currency.JPY)
-                .rateToUsd(new BigDecimal("0.0073"))
+                .currency(Currency.GBP)
+                .rateToUsd(new BigDecimal("1.23"))
                 .build());
 
         accessor.save(JpaExchangeRateEntity.builder()
                 .currency(Currency.USD)
                 .rateToUsd(BigDecimal.ONE)
-                .build());
-
-        accessor.save(JpaExchangeRateEntity.builder()
-                .currency(Currency.CAD)
-                .rateToUsd(new BigDecimal("0.77"))
-                .build());
-
-        accessor.save(JpaExchangeRateEntity.builder()
-                .currency(Currency.CNY)
-                .rateToUsd(new BigDecimal("0.15"))
                 .build());
     }
 

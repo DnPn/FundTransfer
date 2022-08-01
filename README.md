@@ -79,23 +79,31 @@ Here are example of queries executed with the `dev` profile enabled just after t
 
 4. try to make a transfer between accounts with an unsupported currency:
 
-- the exchange rate of `AUD` is not registered
-- the account `456` uses the currency `AUD`
+- the exchange rate of `JPY` is not registered
+- the account `789` uses the currency `JPY`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "587.21"}'`
+  {"fromAccount": "123", "toAccount": "789", "amount": "587.21"}'`
 
-5. try to make a transfer with an amount greater than the balance of the debit account:
+5. try to make a transfer between accounts with the same currency (even if the currency is not known by the exchange
+   rate system):
+
+- the exchange rate of `JPY` is not registered
+- but the accounts `789` and `101` both use the currency `JPY`, therefore no currency conversion is needed
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "101", "toAccount": "789", "amount": "587.21"}'`
+
+6. try to make a transfer with an amount greater than the balance of the debit account:
 
 - the amount `1500` is greater than the initial balance of the account `123`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "789", "amount": "1500"}'`
+  {"fromAccount": "123", "toAccount": "456", "amount": "1500"}'`
 
-6. make a valid transfer:
+7. make a valid transfer:
 
 - the amount `587.21` is less than the initial balance of the account `123`
-- the accounts `123` and `789` have their currencies registered in the dev database
+- the accounts `123` and `456` have their currencies registered in the dev database
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "789", "amount": "587.21"}'`
+  {"fromAccount": "123", "toAccount": "456", "amount": "587.21"}'`
 
 ---
 

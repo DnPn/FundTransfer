@@ -34,13 +34,13 @@ public class SqlAccountDevSetup {
         accessor.save(JpaAccountEntity.builder()
                 .id(123)
                 .balance(new BigDecimal("1234.56"))
-                .currency(Currency.EUR)
+                .currency(Currency.USD)
                 .build());
 
         accessor.save(JpaAccountEntity.builder()
                 .id(456)
                 .balance(new BigDecimal("450001.78"))
-                .currency(Currency.AUD)
+                .currency(Currency.GBP)
                 .build());
 
         accessor.save(JpaAccountEntity.builder()
@@ -52,8 +52,9 @@ public class SqlAccountDevSetup {
         accessor.save(JpaAccountEntity.builder()
                 .id(101)
                 .balance(new BigDecimal("41200"))
-                .currency(Currency.USD)
+                .currency(Currency.JPY)
                 .build());
+
     }
 
     private void logCreatedAccounts(JpaAccountAccessor accessor) {
