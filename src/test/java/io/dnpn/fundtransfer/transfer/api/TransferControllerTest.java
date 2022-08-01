@@ -5,13 +5,13 @@ import io.dnpn.fundtransfer.transfer.service.TransferFailureException;
 import io.dnpn.fundtransfer.transfer.service.TransferRequest;
 import io.dnpn.fundtransfer.transfer.service.TransferService;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.*;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -45,27 +47,23 @@ class TransferControllerTest {
             .toAccountId(456)
             .amount(new BigDecimal(AMOUNT_AS_STRING))
             .build();
+    private static final LocalDateTime NOW = LocalDateTime.of(2022, Month.APRIL, 14, 9, 50, 23);
+    private static final ZoneId ZONE_ID = ZoneId.of("UTC+4");
+    // Expected timestamp returned when getting the time NOW from the clock and applying the offset from the ZONE_ID
+    private static final LocalDateTime EXPECTED_TIMESTAMP = LocalDateTime.of(2022, Month.APRIL, 14, 13, 50, 23);
+
     private static final String METHOD_SOURCE_INVALID_LONG = "provideInvalidLongs";
     private static final String METHOD_SOURCE_INVALID_BIG_DECIMAL = "provideInvalidBigDecimals";
 
     @Mock
     private TransferService service;
-    @InjectMocks
+    private Clock clock;
     private TransferController controller;
 
-    private static Stream<Arguments> provideInvalidLongs() {
-        return Stream.of(
-                Arguments.of(""),
-                Arguments.of("abc"),
-                Arguments.of("123.45")
-        );
-    }
-
-    private static Stream<Arguments> provideInvalidBigDecimals() {
-        return Stream.of(
-                Arguments.of(""),
-                Arguments.of("abc")
-        );
+    @BeforeEach
+    void beforeEach() {
+        this.clock = Clock.fixed(NOW.toInstant(ZoneOffset.UTC), ZONE_ID);
+        this.controller = new TransferController(service, clock);
     }
 
     @ParameterizedTest
@@ -115,8 +113,8 @@ class TransferControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(API_REQUEST, response.getBody().request());
-        assertNotNull(response.getBody().message());
-        assertNotNull(response.getBody().timestamp());
+        assertEquals(TransferController.SUCCESSFUL_TRANSFER_MESSAGE, response.getBody().message());
+        assertEquals(EXPECTED_TIMESTAMP, response.getBody().timestamp());
     }
 
     @SneakyThrows
@@ -154,5 +152,20 @@ class TransferControllerTest {
         } catch (ResponseStatusException exception) {
             assertEquals(expectedStatus, exception.getStatus());
         }
+    }
+
+    private static Stream<Arguments> provideInvalidLongs() {
+        return Stream.of(
+                Arguments.of(""),
+                Arguments.of("abc"),
+                Arguments.of("123.45")
+        );
+    }
+
+    private static Stream<Arguments> provideInvalidBigDecimals() {
+        return Stream.of(
+                Arguments.of(""),
+                Arguments.of("abc")
+        );
     }
 }

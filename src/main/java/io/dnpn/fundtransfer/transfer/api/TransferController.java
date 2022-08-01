@@ -1,5 +1,6 @@
 package io.dnpn.fundtransfer.transfer.api;
 
+import io.dnpn.fundtransfer.common.annotation.VisibleForTesting;
 import io.dnpn.fundtransfer.transfer.service.IllegalTransferException;
 import io.dnpn.fundtransfer.transfer.service.TransferFailureException;
 import io.dnpn.fundtransfer.transfer.service.TransferRequest;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 /**
@@ -24,9 +26,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class TransferController {
 
-    private static final String SUCCESSFUL_TRANSFER_MESSAGE = "Transfer successful";
+    @VisibleForTesting
+    static final String SUCCESSFUL_TRANSFER_MESSAGE = "Transfer successful";
 
     private final TransferService service;
+    private final Clock clock;
 
     /**
      * Transfers funds from one account to the other.
@@ -42,7 +46,7 @@ public class TransferController {
 
         final TransferApiResponse response = TransferApiResponse.builder()
                 .request(request)
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now(clock))
                 .message(SUCCESSFUL_TRANSFER_MESSAGE)
                 .build();
         return ResponseEntity.ok(response);
