@@ -98,6 +98,18 @@ class TransferServiceTest {
         assertThrows(IllegalTransferException.class, () -> transferService.transfer(REQUEST));
     }
 
+    @Test
+    void GIVEN_sameAccount_WHEN_transfer_THEN_throwsIllegalTransfer() {
+        TransferRequest request = TransferRequest.builder()
+                .amount(AMOUNT)
+                .fromAccountId(DEBIT_ACCOUNT_ID)
+                .toAccountId(DEBIT_ACCOUNT_ID)
+                .build();
+        doReturn(Optional.of(debitAccount)).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
+
+        assertThrows(IllegalTransferException.class, () -> transferService.transfer(request));
+    }
+
     @SneakyThrows
     @Test
     void GIVEN_currencyConversionException_WHEN_transfer_THEN_throwsTransferFailure() {

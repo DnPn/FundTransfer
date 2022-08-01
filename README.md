@@ -127,6 +127,20 @@ Here are example of queries executed with the `dev` profile enabled just after t
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
   {"fromAccount": "123", "toAccount": "456", "amount": "587.21"}'`
 
+8. try to make a transfer with an invalid amount:
+
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "456", "amount": "-587.21"}'`
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "456", "amount": "0"}'`
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "456", "amount": "abc"}'`
+
+9. try to make a transfer within the same account:
+
+- run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
+  {"fromAccount": "123", "toAccount": "123", "amount": "587.21"}'`
+
 ---
 
 ## Troubleshooting

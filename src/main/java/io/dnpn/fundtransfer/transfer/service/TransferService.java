@@ -43,6 +43,7 @@ public class TransferService {
         log.debug("The balance of the debit account is sufficient for the transfer.");
 
         final Account creditAccount = getAccountById(request.toAccountId());
+        assertDifferentAccounts(debitAccount, creditAccount);
         final BigDecimal creditedAmount = calculateDebitedAmount(debitAccount, creditAccount, debitedAmount);
 
         debitAccount(debitAccount, debitedAmount);
@@ -82,6 +83,14 @@ public class TransferService {
         if (debitedAmount.compareTo(debitedAccount.getBalance()) > 0) {
             final String message = String.format("Invalid transfer of %.2f %s from the account %s: the amount exceeds" +
                     " the balance.", debitedAmount, debitedAccount.getCurrency(), debitedAccount.getAccountId());
+            throw new IllegalTransferException(message);
+        }
+    }
+
+    private void assertDifferentAccounts(Account debitAccount, Account creditAccount) throws IllegalTransferException {
+        if (debitAccount.getAccountId() == creditAccount.getAccountId()) {
+            final String message = String.format("The same account %d was chosen as a debit and credit account, " +
+                    "please choose different accounts to make a transfer.", debitAccount.getAccountId());
             throw new IllegalTransferException(message);
         }
     }
