@@ -51,14 +51,17 @@ Date: Sun, 24 Jul 2022 13:00:57 GMT
 
 If it is not the case verify in the console where you launched the application that there is no exception. Also you
 can verify that you are querying the right port by verifying the parameter `server.port` in
-`/resources/application.properties`.
+`/resources/application-dev.properties`.
 
 ### Profiles
 
-If the Spring profile is set to `dev` (see `spring.profiles.active` in `/resources/application.properties`):
+The Spring profile is equal to the Maven property `spring.profiles.active` set in the `pom.xml`.
+
+By default, the selected profile is `dev` and implies the following:
 
 - mock accounts are created at startup (see the class `SqlAccountDevSetup`)
-- mock exchange rates to USD are created at startup (see the class `SqlExchangeRateDevSetup`)
+- mock exchange rates to USD are created at startup if the SQL implementation for the currency conversion is chosen
+  (see the class `SqlExchangeRateDevSetup`)
 
 ### Swagger
 
@@ -70,7 +73,7 @@ Once the application is started you can access the Swagger (OpenAPI version 3) v
 ### Currency conversion
 
 The exchange rate of currencies implementation can be chosen by setting the value of `currencyConversion.mode` in
-the file `application.properties`:
+the file `application-dev.properties`:
 
 - if set to `sql`, the exchange rates to a reference currency (USD) are persisted in an in-memory H2 database (see
   `/currency/service/impl/sql`)

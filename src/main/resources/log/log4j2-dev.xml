@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Default log4j2 file used by the unit tests.
-
-It is advised not to modify it and instead to define a new file for each profile in `resources/log/log4j2-{profile}.xml`
-and reference it from the relevant `resources/application-{profile}.properties` file
--->
 <Configuration>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
@@ -17,6 +11,10 @@ and reference it from the relevant `resources/application-{profile}.properties` 
         <Root level="INFO">
             <AppenderRef ref="Console"/>
         </Root>
+
+        <Logger name="io.dnpn.fundtransfer.account" level="DEBUG"></Logger>
+        <Logger name="io.dnpn.fundtransfer.currency" level="DEBUG"></Logger>
+        <Logger name="io.dnpn.fundtransfer.transfer" level="DEBUG"></Logger>
     </Loggers>
 
 </Configuration>

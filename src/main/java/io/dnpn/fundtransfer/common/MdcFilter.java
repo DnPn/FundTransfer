@@ -30,10 +30,11 @@ public class MdcFilter extends HttpFilter {
         MDC.put(REQUEST_ID_MDC_FIELD, requestId);
         response.setHeader(REQUEST_ID_HEADER, requestId);
 
-        log.debug("Incoming request {} {} from the IP {}",
+        log.debug("Incoming request {} {} from the IP {} with requestID set to {}",
                 request.getMethod(),
                 request.getRequestURI(),
-                request.getRemoteAddr());
+                request.getRemoteAddr(),
+                requestId);
 
         filterChain.doFilter(request, response);
     }
