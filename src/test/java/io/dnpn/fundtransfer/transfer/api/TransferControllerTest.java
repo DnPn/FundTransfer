@@ -9,9 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -20,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.*;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,17 +30,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TransferControllerTest {
 
-    private static final String DEBIT_ACCOUNT_AS_STRING = "123";
-    private static final String CREDIT_ACCOUNT_AS_STRING = "456";
+    private static final long DEBIT_ACCOUNT = 123;
+    private static final long CREDIT_ACCOUNT = 456;
     private static final BigDecimal AMOUNT = new BigDecimal("123.45");
     private static final TransferApiRequest API_REQUEST = TransferApiRequest.builder()
-            .fromAccount(DEBIT_ACCOUNT_AS_STRING)
-            .toAccount(CREDIT_ACCOUNT_AS_STRING)
+            .fromAccount(DEBIT_ACCOUNT)
+            .toAccount(CREDIT_ACCOUNT)
             .amount(AMOUNT)
             .build();
     private static final TransferRequest SERVICE_REQUEST = TransferRequest.builder()
-            .fromAccountId(123)
-            .toAccountId(456)
+            .fromAccountId(DEBIT_ACCOUNT)
+            .toAccountId(CREDIT_ACCOUNT)
             .amount(AMOUNT)
             .build();
     private static final LocalDateTime NOW = LocalDateTime.of(2022, Month.APRIL, 14, 9, 50, 23);
@@ -52,8 +48,6 @@ class TransferControllerTest {
     // Expected timestamp returned when getting the time NOW from the clock and applying the offset from the ZONE_ID
     private static final LocalDateTime EXPECTED_TIMESTAMP = LocalDateTime.of(2022, Month.APRIL, 14, 13, 50, 23);
 
-    private static final String METHOD_SOURCE_INVALID_LONG = "provideInvalidLongs";
-    private static final String METHOD_SOURCE_INVALID_BIG_DECIMAL = "provideInvalidBigDecimals";
 
     @Mock
     private TransferService service;
@@ -64,28 +58,6 @@ class TransferControllerTest {
     void beforeEach() {
         this.clock = Clock.fixed(NOW.toInstant(ZoneOffset.UTC), ZONE_ID);
         this.controller = new TransferController(service, clock);
-    }
-
-    @ParameterizedTest
-    @MethodSource(METHOD_SOURCE_INVALID_LONG)
-    void WHEN_debitAccountIdIsNotLong_THEN_throwResponseStatusForBadRequest(String debitAccountId) {
-        TransferApiRequest request = TransferApiRequest.builder()
-                .fromAccount(debitAccountId)
-                .toAccount(CREDIT_ACCOUNT_AS_STRING)
-                .amount(AMOUNT)
-                .build();
-        assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
-    }
-
-    @ParameterizedTest
-    @MethodSource(METHOD_SOURCE_INVALID_LONG)
-    void WHEN_creditAccountIdIsNotLong_THEN_throwResponseStatusForBadRequest(String creditAccountId) {
-        TransferApiRequest request = TransferApiRequest.builder()
-                .fromAccount(DEBIT_ACCOUNT_AS_STRING)
-                .toAccount(creditAccountId)
-                .amount(AMOUNT)
-                .build();
-        assertThrowsResponseStatusForBadRequest(() -> controller.transfer(request));
     }
 
     @SneakyThrows
@@ -141,20 +113,5 @@ class TransferControllerTest {
         } catch (ResponseStatusException exception) {
             assertEquals(expectedStatus, exception.getStatus());
         }
-    }
-
-    private static Stream<Arguments> provideInvalidLongs() {
-        return Stream.of(
-                Arguments.of(""),
-                Arguments.of("abc"),
-                Arguments.of("123.45")
-        );
-    }
-
-    private static Stream<Arguments> provideInvalidBigDecimals() {
-        return Stream.of(
-                Arguments.of(""),
-                Arguments.of("abc")
-        );
     }
 }

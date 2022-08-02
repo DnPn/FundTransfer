@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.NonNull;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 /**
@@ -19,14 +18,12 @@ import java.math.BigDecimal;
 @Builder
 public record TransferApiRequest(
         @Schema(example = "123")
-        @Pattern(regexp = ACCOUNT_PATTERN_REGEXP)
         @JsonProperty(TransferApiField.FROM_ACCOUNT)
-        @NonNull String fromAccount,
+        long fromAccount,
 
         @Schema(example = "456")
-        @Pattern(regexp = ACCOUNT_PATTERN_REGEXP)
         @JsonProperty(TransferApiField.TO_ACCOUNT)
-        @NonNull String toAccount,
+        long toAccount,
 
         @Schema(example = "123.45")
         @DecimalMin(value = "0", inclusive = false)

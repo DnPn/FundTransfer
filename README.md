@@ -78,7 +78,7 @@ in [your account settings](https://apilayer.com/account).
 
 ---
 
-## Example
+## Examples
 
 Here are example of queries executed with the `dev` profile enabled just after the startup of the application:
 
@@ -94,7 +94,7 @@ Here are example of queries executed with the `dev` profile enabled just after t
 
 - no account is register with the ID `999`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "999", "amount": "587.21"}'`
+  {"fromAccount": 123, "toAccount": 999, "amount": 587.21}'`
 
 4. try to make a transfer between accounts with an unsupported currency (*you cannot test this scenario if you are
    using the API implementation since the API supports the `JPY` currency*):
@@ -102,7 +102,7 @@ Here are example of queries executed with the `dev` profile enabled just after t
 - the exchange rate of `JPY` is not registered
 - the account `789` uses the currency `JPY`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "789", "amount": "587.21"}'`
+  {"fromAccount": 123, "toAccount": 789, "amount": 587.21}'`
 - ***Note**: you cannot test this scenario if you are using the API implementation since the API supports the `JPY`
   currency*
 
@@ -112,34 +112,34 @@ Here are example of queries executed with the `dev` profile enabled just after t
 - the exchange rate of `JPY` is not registered
 - but the accounts `789` and `101` both use the currency `JPY`, therefore no currency conversion is needed
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "101", "toAccount": "789", "amount": "587.21"}'`
+  {"fromAccount": 101, "toAccount": 789, "amount": 587.21}'`
 
 6. try to make a transfer with an amount greater than the balance of the debit account:
 
 - the amount `1500` is greater than the initial balance of the account `123`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "1500"}'`
+  {"fromAccount": 123, "toAccount": 456, "amount": 1500}'`
 
 7. make a valid transfer:
 
 - the amount `587.21` is less than the initial balance of the account `123`
 - the accounts `123` and `456` have their currencies registered in the dev database
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "587.21"}'`
+  {"fromAccount": 123, "toAccount": 456, "amount": 587.21}'`
 
 8. try to make a transfer with an invalid amount:
 
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "-587.21"}'`
+  {"fromAccount": 123, "toAccount": 456, "amount": -587.21}'`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "0"}'`
+  {"fromAccount": 123, "toAccount": 456, "amount": 0}'`
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "456", "amount": "abc"}'`
+  {"fromAccount": 123, "toAccount": 456, "amount": "abc"}'`
 
 9. try to make a transfer within the same account:
 
 - run `curl -L -X POST 'http://localhost:8080/transfer' -H 'Content-Type: application/json' --data-raw '
-  {"fromAccount": "123", "toAccount": "123", "amount": "587.21"}'`
+  {"fromAccount": 123, "toAccount": 123, "amount": 587.21}'`
 
 ---
 

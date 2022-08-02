@@ -66,25 +66,11 @@ public class TransferController {
     }
 
     private TransferRequest toServiceRequest(TransferApiRequest apiRequest) {
-        final long fromAccountId = convertToLong(TransferApiField.FROM_ACCOUNT, apiRequest.fromAccount());
-        final long toAccountId = convertToLong(TransferApiField.TO_ACCOUNT, apiRequest.toAccount());
-
         return TransferRequest.builder()
-                .fromAccountId(fromAccountId)
-                .toAccountId(toAccountId)
+                .fromAccountId(apiRequest.fromAccount())
+                .toAccountId(apiRequest.toAccount())
                 .amount(apiRequest.amount())
                 .build();
-    }
-
-    private long convertToLong(String fieldName, String fieldValue) {
-        try {
-            return Long.parseLong(fieldValue);
-
-        } catch (NumberFormatException exception) {
-            final String message = String.format("Invalid value <%s> for the field <%s>: must be a valid integer.",
-                    fieldValue, fieldName);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message, exception);
-        }
     }
 
     private void executeTransfer(TransferApiRequest request) {
