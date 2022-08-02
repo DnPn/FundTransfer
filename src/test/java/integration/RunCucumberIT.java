@@ -6,6 +6,9 @@ import org.junit.platform.suite.api.Suite;
 
 import static io.cucumber.junit.platform.engine.Constants.*;
 
+/**
+ * Cucumber starting point.
+ */
 @Suite
 @IncludeEngines("cucumber")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "integration")
