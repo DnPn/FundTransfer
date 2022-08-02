@@ -10,6 +10,16 @@ Pet project with Spring Boot modelling a fund transfers between 2 accounts:
 
 ---
 
+## Building the application
+
+| Command                            | Unit tests | Integration tests |
+|------------------------------------|------------|-------------------|
+| `./mvnw clean install`             | Y          | Y                 |
+| `./mvnw clean install -DskipITs`   | Y          | N                 |
+| `./mvnw clean install -DskipTests` | N          | N                 |
+
+---
+
 ## Running the application
 
 ### From IntelliJ Idea
