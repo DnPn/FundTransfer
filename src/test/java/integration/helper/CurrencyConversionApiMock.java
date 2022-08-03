@@ -2,6 +2,7 @@ package integration.helper;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 
+import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
+
 @Component
+@Scope(SCOPE_CUCUMBER_GLUE)
 public class CurrencyConversionApiMock {
 
     private static final String PORT_PROPERTY = "mockWebServer.port";

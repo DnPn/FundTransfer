@@ -31,7 +31,7 @@ public class FundTransferSteps {
     private static final long NOT_EXITING_ACCOUNT_ID = 999;
     private static final JpaAccountEntity SOURCE_ACCOUNT = JpaAccountEntity.builder()
             .id(123)
-            .balance(new BigDecimal("50.21"))
+            .balance(new BigDecimal("47.21"))
             .currency(Currency.GBP)
             .build();
     private static final JpaAccountEntity TARGET_ACCOUNT = JpaAccountEntity.builder()
@@ -42,6 +42,7 @@ public class FundTransferSteps {
     private static final Collection<JpaAccountEntity> ACCOUNTS = List.of(SOURCE_ACCOUNT, TARGET_ACCOUNT);
 
     private static final BigDecimal VALID_TRANSFER_AMOUNT = new BigDecimal("25");
+    private static final BigDecimal TOO_BIG_TRANSFER_AMOUNT = new BigDecimal("50");
 
     private static final BigDecimal CONVERTED_AMOUNT = new BigDecimal("3724.305775");
     private static final String CURRENCY_CONVERSION_API_RESPONSE = """
@@ -95,7 +96,7 @@ public class FundTransferSteps {
         mockExchangeRateCannotBeRetrieved();
     }
 
-    @When("execute valid transfer fund")
+    @When("execute valid fund transfer")
     public void executeValidTransferFund() {
         // the default behaviour of mock server is to successfully respond to a currency conversion request. It can be
         // overridden in a @Given step since the returned response will be the first registered.
@@ -125,6 +126,16 @@ public class FundTransferSteps {
                 .amount(VALID_TRANSFER_AMOUNT)
                 .fromAccount(SOURCE_ACCOUNT.getId())
                 .toAccount(NOT_EXITING_ACCOUNT_ID)
+                .build();
+        apiAccessor.transfer(request);
+    }
+
+    @When("execute fund transfer bigger than the source account balance")
+    public void executeFundTransferBiggerThanTheSourceAccountBalance() {
+        final var request = TransferApiRequest.builder()
+                .amount(TOO_BIG_TRANSFER_AMOUNT)
+                .fromAccount(SOURCE_ACCOUNT.getId())
+                .toAccount(TARGET_ACCOUNT.getId())
                 .build();
         apiAccessor.transfer(request);
     }
