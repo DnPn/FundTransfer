@@ -22,7 +22,7 @@ import static io.cucumber.spring.CucumberTestContext.SCOPE_CUCUMBER_GLUE;
 @Scope(SCOPE_CUCUMBER_GLUE)
 public class ApplicationApiAccessor {
 
-    private static final Duration REQUEST_TIMEOUT = Duration.ofMillis(500);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000);
     private static final String BASE_URL = "http://localhost:%d";
 
     private static final String PING_PATH = "ping";
