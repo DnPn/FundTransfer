@@ -37,6 +37,7 @@ class ApiCurrencyConversionServiceTest {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
+    private static final String CURRENCY_CONVERSION_PATH = "/convert";
     private static final String AMOUNT_QUERY_PARAM = "amount";
     private static final String FROM_QUERY_PARAM = "from";
     private static final String TO_QUERY_PARAM = "to";
@@ -84,7 +85,7 @@ class ApiCurrencyConversionServiceTest {
         webServer = new MockWebServer();
         webServer.start();
 
-        baseUrl = String.format("http://localhost:%s/convert", webServer.getPort());
+        baseUrl = String.format("http://localhost:%s%s", webServer.getPort(), CURRENCY_CONVERSION_PATH);
     }
 
     @BeforeEach
@@ -137,8 +138,10 @@ class ApiCurrencyConversionServiceTest {
 
         assertEquals(HttpMethod.GET.toString(), capturedRequest.getMethod());
 
-        var requestUrl = capturedRequest.getRequestUrl().url();
-        assertEquals(baseUrl, getBaseUrl(requestUrl));
+        // We should not compare the whole URL but just the path since depending on the OS (Linux/Windows) a local
+        // call will either appear with the domain `localhost` or `127.0.0.1`
+        var requestedPath = capturedRequest.getRequestUrl().url().getPath();
+        assertEquals(CURRENCY_CONVERSION_PATH, requestedPath);
     }
 
     @Test
