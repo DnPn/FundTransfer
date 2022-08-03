@@ -2,6 +2,7 @@ package io.dnpn.fundtransfer.transfer.service;
 
 import io.dnpn.fundtransfer.account.Account;
 import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
@@ -137,7 +138,9 @@ class TransferServiceTest {
     void WHEN_transfer_THEN_executeCredit() {
         mockValidAccountAccess();
         BigDecimal convertedAmount = mockAmountConversion();
-        BigDecimal updatedBalance = creditAccount.getBalance().add(convertedAmount);
+        BigDecimal convertedAmountScaled = convertedAmount.setScale(MoneyHandling.SCALE_FOR_MONEY,
+                MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
+        BigDecimal updatedBalance = creditAccount.getBalance().add(convertedAmountScaled);
 
         transferService.transfer(REQUEST);
 
@@ -153,7 +156,7 @@ class TransferServiceTest {
 
     @SneakyThrows
     private BigDecimal mockAmountConversion() {
-        BigDecimal convertedAmount = new BigDecimal("147.89");
+        BigDecimal convertedAmount = new BigDecimal("147.8952475");
         doReturn(convertedAmount).when(conversionService).convert(any());
         return convertedAmount;
     }

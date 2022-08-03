@@ -8,6 +8,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.dnpn.fundtransfer.account.accessor.impl.JpaAccountAccessor;
 import io.dnpn.fundtransfer.account.accessor.impl.JpaAccountEntity;
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.transfer.api.TransferApiRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -151,14 +152,16 @@ public class FundTransferSteps {
     public void theSourceAccountIsDebitedOfTheAmount() {
         final var expectedAmount = SOURCE_ACCOUNT.getBalance().subtract(VALID_TRANSFER_AMOUNT);
         final var actualAmount = getUpdatedAccount(SOURCE_ACCOUNT).getBalance();
-        assertBigDecimalEquals(expectedAmount, actualAmount);
+        assertEquals(expectedAmount, actualAmount);
     }
 
     @Then("the target account is credited of the converted amount")
     public void theTargetAccountIsCreditedOfTheConvertedAmount() {
-        final var expectedAmount = TARGET_ACCOUNT.getBalance().add(CONVERTED_AMOUNT);
+        final var scaledConvertedAmount = CONVERTED_AMOUNT.setScale(MoneyHandling.SCALE_FOR_MONEY,
+                MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
+        final var expectedAmount = TARGET_ACCOUNT.getBalance().add(scaledConvertedAmount);
         final var actualAmount = getUpdatedAccount(TARGET_ACCOUNT).getBalance();
-        assertBigDecimalEquals(expectedAmount, actualAmount);
+        assertEquals(expectedAmount, actualAmount);
     }
 
     @Then("the transfer is denied")
@@ -193,20 +196,5 @@ public class FundTransferSteps {
 
     private JpaAccountEntity getUpdatedAccount(JpaAccountEntity account) {
         return accountAccessor.findById(account.getId()).get();
-    }
-
-    /**
-     * Asserts that 2 BigDecimal values are equal. This method ensures that both values use the same scale
-     * solving the problem of different trailing zeros (for example, we want 25 to be considered equal to 25.00).
-     *
-     * @param expected the expected value
-     * @param actual   the actual value
-     */
-    private void assertBigDecimalEquals(BigDecimal expected, BigDecimal actual) {
-        int targetScale = Math.max(expected.scale(), actual.scale());
-        expected = expected.setScale(targetScale);
-        actual = actual.setScale(targetScale);
-
-        assertEquals(expected, actual);
     }
 }

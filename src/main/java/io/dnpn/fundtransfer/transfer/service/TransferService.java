@@ -2,6 +2,7 @@ package io.dnpn.fundtransfer.transfer.service;
 
 import io.dnpn.fundtransfer.account.Account;
 import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionService;
@@ -97,12 +98,13 @@ public class TransferService {
 
     private BigDecimal calculateDebitedAmount(Account debitAccount, Account creditAccount, BigDecimal debitedAmount) throws TransferFailureException {
         try {
-            final CurrencyConversionRequest request = CurrencyConversionRequest.builder()
+            final var request = CurrencyConversionRequest.builder()
                     .amount(debitedAmount)
                     .fromCurrency(debitAccount.getCurrency())
                     .toCurrency(creditAccount.getCurrency())
                     .build();
-            return conversionService.convert(request);
+            final var convertedAmount = conversionService.convert(request);
+            return scaleConvertedAmountToMoney(convertedAmount);
 
         } catch (CurrencyConversionException exception) {
             final String message = String.format("Unsupported currency conversion from %s to %s.",
@@ -110,6 +112,10 @@ public class TransferService {
             log.error(message, exception);
             throw new TransferFailureException(message, exception);
         }
+    }
+
+    private BigDecimal scaleConvertedAmountToMoney(BigDecimal amount) {
+        return amount.setScale(MoneyHandling.SCALE_FOR_MONEY, MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
     }
 
     private void debitAccount(Account account, BigDecimal amount) {

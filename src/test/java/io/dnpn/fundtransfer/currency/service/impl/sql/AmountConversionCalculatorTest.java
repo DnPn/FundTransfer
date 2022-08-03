@@ -1,5 +1,6 @@
 package io.dnpn.fundtransfer.currency.service.impl.sql;
 
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import lombok.SneakyThrows;
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,13 +79,10 @@ class AmountConversionCalculatorTest {
                 .targetExchangeRate(TARGET_RATE)
                 .build();
 
-        BigDecimal actualConvertedAmount = calculator.convert(request);
+        BigDecimal actualConvertedAmount = calculator.convert(request)
+                .setScale(MoneyHandling.SCALE_FOR_MONEY, MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
 
-        // truncates the converted amount to match the number of decimals of EXPECTED_CONVERTED_AMOUNT
-        BigDecimal actualConvertedAmountSameScale = actualConvertedAmount.setScale(
-                EXPECTED_CONVERTED_AMOUNT.scale(),
-                RoundingMode.DOWN);
-        assertEquals(EXPECTED_CONVERTED_AMOUNT, actualConvertedAmountSameScale);
+        assertEquals(EXPECTED_CONVERTED_AMOUNT, actualConvertedAmount);
     }
 
     private static Stream<Arguments> provideInvalidRateToUsd() {

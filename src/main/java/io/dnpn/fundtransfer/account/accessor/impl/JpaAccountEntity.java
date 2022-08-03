@@ -1,5 +1,6 @@
 package io.dnpn.fundtransfer.account.accessor.impl;
 
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,6 @@ public class JpaAccountEntity {
     @Id
     private long id;
     private Currency currency;
-    @Column(precision = 25, scale = 10)
+    @Column(precision = MoneyHandling.PRECISION_FOR_MONEY, scale = MoneyHandling.SCALE_FOR_MONEY)
     private BigDecimal balance;
 }

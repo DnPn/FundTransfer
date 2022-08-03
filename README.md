@@ -70,6 +70,17 @@ Once the application is started you can access the Swagger (OpenAPI version 3) v
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **Swagger JSON**: http://localhost:8080/v3/api-docs
 
+### Monetary representations
+
+All the money amounts are represented with 2 decimals, this means that in certain cases rounding needs to be performed:
+
+- if the given amount to round is part of a request then it is rounded half-up (example: if a transfer of `123.456 USD`
+  is requested, the executed transfer will actually be of `123.46 USD`).
+- if the given amount to round is to be credited to the customer then it is rounded down (example: if the currency
+  conversion returns `123.456 USD`, then the customer will be credited of `123.45 USD`). This means that the
+  customer can lose up to 1 cent (excluded) of their own currency when receiving a transfer that required a currency
+  conversion.
+
 ### Currency conversion
 
 The exchange rate of currencies implementation can be chosen by setting the value of `currencyConversion.mode` in

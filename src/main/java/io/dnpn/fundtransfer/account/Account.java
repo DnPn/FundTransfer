@@ -1,5 +1,7 @@
 package io.dnpn.fundtransfer.account;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -35,5 +37,6 @@ public class Account {
      */
     @Schema(example = "123.45")
     @DecimalMin(value = "0", inclusive = false)
+    @JsonSerialize(using = MoneyHandling.Serializer.class)
     @NonNull BigDecimal balance;
 }

@@ -1,4 +1,4 @@
-Feature: Health Check
+Feature: Fund Transfer
   This feature is about performing fund transfers
 
   Scenario: A valid fund transfer updates the accounts
