@@ -1,6 +1,6 @@
 package integration.steps;
 
-import integration.helper.RestAccessor;
+import integration.helper.ApplicationApiAccessor;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HealthCheckSteps {
 
     @Autowired
-    private RestAccessor accessor;
+    private ApplicationApiAccessor accessor;
 
     @When("ping the server")
     public void sendPing() {

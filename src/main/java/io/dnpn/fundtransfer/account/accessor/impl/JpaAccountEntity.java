@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,10 +18,11 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class JpaAccountEntity {
+public class JpaAccountEntity {
 
     @Id
     private long id;
     private Currency currency;
+    @Column(precision = 25, scale = 10)
     private BigDecimal balance;
 }
