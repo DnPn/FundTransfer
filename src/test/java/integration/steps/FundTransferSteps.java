@@ -3,6 +3,7 @@ package integration.steps;
 import integration.helper.ApplicationApiAccessor;
 import integration.helper.CurrencyConversionApiMock;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.dnpn.fundtransfer.account.accessor.impl.JpaAccountAccessor;
@@ -63,6 +64,14 @@ public class FundTransferSteps {
             VALID_TRANSFER_AMOUNT,
             CONVERTED_AMOUNT
     );
+    private static final String INVALID_CURRENCY_API_RESPONSE = """
+            {
+                "error": {
+                    "code": "invalid_to_currency",
+                    "message": "You have entered an invalid \\"to\\" property. [Example: to=GBP]"
+                }
+            }
+            """;
 
 
     @Autowired
@@ -81,8 +90,15 @@ public class FundTransferSteps {
         accountAccessor.saveAll(ACCOUNTS);
     }
 
+    @Given("the exchange rate cannot be retrieved")
+    public void theExchangeRateCannotBeRetrieved() {
+        mockExchangeRateCannotBeRetrieved();
+    }
+
     @When("execute valid transfer fund")
     public void executeValidTransferFund() {
+        // the default behaviour of mock server is to successfully respond to a currency conversion request. It can be
+        // overridden in a @Given step since the returned response will be the first registered.
         mockSuccessfulCurrencyConversionApiCall();
 
         final var request = TransferApiRequest.builder()
@@ -95,8 +111,6 @@ public class FundTransferSteps {
 
     @When("execute transfer from not existing account")
     public void executeTransferFromNotExistingAccount() {
-        mockSuccessfulCurrencyConversionApiCall();
-
         final var request = TransferApiRequest.builder()
                 .amount(VALID_TRANSFER_AMOUNT)
                 .fromAccount(NOT_EXITING_ACCOUNT_ID)
@@ -107,8 +121,6 @@ public class FundTransferSteps {
 
     @When("execute transfer to not existing account")
     public void executeTransferToNotExistingAccount() {
-        mockSuccessfulCurrencyConversionApiCall();
-
         final var request = TransferApiRequest.builder()
                 .amount(VALID_TRANSFER_AMOUNT)
                 .fromAccount(SOURCE_ACCOUNT.getId())
@@ -144,11 +156,26 @@ public class FundTransferSteps {
         assertTrue(response.getStatusCode().is4xxClientError());
     }
 
+    @Then("the transfer fails")
+    public void theTransferFails() {
+        final var response = apiAccessor.getLatestResponse();
+        assertTrue(response.getStatusCode().is5xxServerError());
+    }
+
     private void mockSuccessfulCurrencyConversionApiCall() {
         final var response = new MockResponse()
                 .setResponseCode(HttpStatus.OK.value())
                 .addHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
                 .setBody(CURRENCY_CONVERSION_API_RESPONSE);
+
+        currencyConversionApiMock.mockNextResponse(response);
+    }
+
+    private void mockExchangeRateCannotBeRetrieved() {
+        final var response = new MockResponse()
+                .setResponseCode(HttpStatus.BAD_REQUEST.value())
+                .addHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
+                .setBody(INVALID_CURRENCY_API_RESPONSE);
 
         currencyConversionApiMock.mockNextResponse(response);
     }
