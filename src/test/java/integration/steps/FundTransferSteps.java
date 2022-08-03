@@ -27,6 +27,7 @@ public class FundTransferSteps {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
+    private static final long NOT_EXITING_ACCOUNT_ID = 999;
     private static final JpaAccountEntity SOURCE_ACCOUNT = JpaAccountEntity.builder()
             .id(123)
             .balance(new BigDecimal("50.21"))
@@ -92,6 +93,30 @@ public class FundTransferSteps {
         apiAccessor.transfer(request);
     }
 
+    @When("execute transfer from not existing account")
+    public void executeTransferFromNotExistingAccount() {
+        mockSuccessfulCurrencyConversionApiCall();
+
+        final var request = TransferApiRequest.builder()
+                .amount(VALID_TRANSFER_AMOUNT)
+                .fromAccount(NOT_EXITING_ACCOUNT_ID)
+                .toAccount(TARGET_ACCOUNT.getId())
+                .build();
+        apiAccessor.transfer(request);
+    }
+
+    @When("execute transfer to not existing account")
+    public void executeTransferToNotExistingAccount() {
+        mockSuccessfulCurrencyConversionApiCall();
+
+        final var request = TransferApiRequest.builder()
+                .amount(VALID_TRANSFER_AMOUNT)
+                .fromAccount(SOURCE_ACCOUNT.getId())
+                .toAccount(NOT_EXITING_ACCOUNT_ID)
+                .build();
+        apiAccessor.transfer(request);
+    }
+
     @Then("the transfer succeeds")
     public void theTransferSucceeds() {
         final var response = apiAccessor.getLatestResponse();
@@ -111,6 +136,12 @@ public class FundTransferSteps {
         final var expectedAmount = TARGET_ACCOUNT.getBalance().add(CONVERTED_AMOUNT);
         final var actualAmount = getUpdatedAccount(TARGET_ACCOUNT).getBalance();
         assertBigDecimalEquals(expectedAmount, actualAmount);
+    }
+
+    @Then("the transfer is denied")
+    public void theTransferIsDenied() {
+        final var response = apiAccessor.getLatestResponse();
+        assertTrue(response.getStatusCode().is4xxClientError());
     }
 
     private void mockSuccessfulCurrencyConversionApiCall() {
