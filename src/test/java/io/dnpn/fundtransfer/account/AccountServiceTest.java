@@ -31,9 +31,9 @@ class AccountServiceTest {
             .build();
 
     @Mock
-    private AccountRepository jpaAccessor;
+    private AccountRepository repository;
     @InjectMocks
-    private AccountService sqlAccessor;
+    private AccountService service;
 
     @Test
     void WHEN_list_THEN_returnAccounts() {
@@ -41,9 +41,9 @@ class AccountServiceTest {
 
         List<AccountEntity> jpaList = List.of(JPA_ACCOUNT_A, JPA_ACCOUNT_B);
         Page<AccountEntity> jpaPage = new PageImpl<>(jpaList);
-        doReturn(jpaPage).when(jpaAccessor).findAll(pageable);
+        doReturn(jpaPage).when(repository).findAll(pageable);
 
-        Page<Account> actualPage = sqlAccessor.list(pageable);
+        Page<Account> actualPage = service.list(pageable);
 
         List<Account> expectedAccounts = List.of(AccountTestHelper.ACCOUNT_A, AccountTestHelper.ACCOUNT_B);
         Page<Account> expectedPage = new PageImpl<>(expectedAccounts);
@@ -52,16 +52,16 @@ class AccountServiceTest {
 
     @Test
     void GIVEN_nullPageable_WHEN_list_THEN_throwNullPointer() {
-        assertThrows(NullPointerException.class, () -> sqlAccessor.list(null));
+        assertThrows(NullPointerException.class, () -> service.list(null));
     }
 
     @Test
     void GIVEN_accountExists_WHEN_getById_THEN_returnAccount() {
         doReturn(Optional.of(JPA_ACCOUNT_A))
-                .when(jpaAccessor)
+                .when(repository)
                 .findById(AccountTestHelper.ID_ACCOUNT_A);
 
-        Optional<Account> actual = sqlAccessor.getById(AccountTestHelper.ID_ACCOUNT_A);
+        Optional<Account> actual = service.getById(AccountTestHelper.ID_ACCOUNT_A);
 
         Optional<Account> expected = Optional.of(AccountTestHelper.ACCOUNT_A);
         assertEquals(expected, actual);
@@ -70,24 +70,32 @@ class AccountServiceTest {
     @Test
     void GIVEN_accountNotFound_WHEN_getById_THEN_returnEmpty() {
         doReturn(Optional.empty())
-                .when(jpaAccessor)
+                .when(repository)
                 .findById(AccountTestHelper.ID_ACCOUNT_A);
 
-        Optional<Account> actual = sqlAccessor.getById(AccountTestHelper.ID_ACCOUNT_A);
+        Optional<Account> actual = service.getById(AccountTestHelper.ID_ACCOUNT_A);
 
         assertEquals(Optional.empty(), actual);
     }
 
     @Test
     void GIVEN_nullAccount_WHEN_update_THEN_throwNullPointer() {
-        assertThrows(NullPointerException.class, () -> sqlAccessor.update(null));
+        assertThrows(NullPointerException.class, () -> service.update(null));
     }
 
     @Test
-    void WHEN_update_THEN_callJpaSave() {
-        sqlAccessor.update(AccountTestHelper.ACCOUNT_A);
+    void WHEN_update_THEN_callSaveOnUpdatedContact() {
+        var accountABeforeUpdate = JPA_ACCOUNT_A.toBuilder()
+                .balance(AccountTestHelper.BALANCE_ACCOUNT_B)
+                .currency(AccountTestHelper.CURRENCY_ACCOUNT_B)
+                .build();
+        doReturn(Optional.of(accountABeforeUpdate))
+                .when(repository)
+                .findById(AccountTestHelper.ID_ACCOUNT_A);
 
-        verify(jpaAccessor).save(JPA_ACCOUNT_A);
+        service.update(AccountTestHelper.ACCOUNT_A);
+
+        verify(repository).save(JPA_ACCOUNT_A);
     }
 
 }
