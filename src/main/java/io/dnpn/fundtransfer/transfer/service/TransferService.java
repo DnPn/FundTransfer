@@ -1,7 +1,7 @@
 package io.dnpn.fundtransfer.transfer.service;
 
 import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
+import io.dnpn.fundtransfer.account.AccountService;
 import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionRequest;
@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class TransferService {
 
-    private final AccountAccessor accountAccessor;
+    private final AccountService accountService;
     private final CurrencyConversionService conversionService;
 
     /**
@@ -56,7 +56,7 @@ public class TransferService {
     }
 
     private Account getAccountById(long accountId) throws IllegalTransferException {
-        return accountAccessor.getById(accountId)
+        return accountService.getById(accountId)
                 .orElseThrow(() -> supplyAccountNotFoundException(accountId));
     }
 
@@ -130,6 +130,6 @@ public class TransferService {
 
     private void updateAccountBalance(Account account, BigDecimal newBalance) {
         account.setBalance(newBalance);
-        accountAccessor.update(account);
+        accountService.update(account);
     }
 }

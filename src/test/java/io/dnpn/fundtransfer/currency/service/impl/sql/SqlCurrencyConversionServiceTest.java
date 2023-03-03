@@ -28,18 +28,18 @@ class SqlCurrencyConversionServiceTest {
             .toCurrency(TARGET_CURRENCY)
             .amount(AMOUNT)
             .build();
-    private static final JpaExchangeRateEntity SOURCE_RATE = JpaExchangeRateEntity.builder()
+    private static final ExchangeRateEntity SOURCE_RATE = ExchangeRateEntity.builder()
             .rateToUsd(new BigDecimal("111"))
             .currency(SOURCE_CURRENCY)
             .build();
-    private static final JpaExchangeRateEntity TARGET_RATE = JpaExchangeRateEntity.builder()
+    private static final ExchangeRateEntity TARGET_RATE = ExchangeRateEntity.builder()
             .rateToUsd(new BigDecimal("222"))
             .currency(TARGET_CURRENCY)
             .build();
     private static final BigDecimal CONVERTED_AMOUNT = new BigDecimal("456.78");
 
     @Mock
-    private JpaExchangeRateAccessor accessor;
+    private ExchangeRateRepository accessor;
     @Mock
     private AmountConversionCalculator calculator;
     @InjectMocks
@@ -113,7 +113,7 @@ class SqlCurrencyConversionServiceTest {
                 .build();
     }
 
-    private void mockCurrencyRate(Currency currency, JpaExchangeRateEntity jpaEntity) {
+    private void mockCurrencyRate(Currency currency, ExchangeRateEntity jpaEntity) {
         doReturn(Optional.of(jpaEntity)).when(accessor).findById(currency);
     }
 }

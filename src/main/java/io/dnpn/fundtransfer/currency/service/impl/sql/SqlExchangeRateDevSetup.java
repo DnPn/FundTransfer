@@ -25,27 +25,27 @@ import java.util.List;
 public class SqlExchangeRateDevSetup {
 
     @Bean
-    CommandLineRunner initExchangeRateDatabase(JpaExchangeRateAccessor accessor) {
+    CommandLineRunner initExchangeRateDatabase(ExchangeRateRepository accessor) {
         return args -> {
             createMockExchangeRates(accessor);
             logCreatedExchangeRates(accessor);
         };
     }
 
-    private void createMockExchangeRates(JpaExchangeRateAccessor accessor) {
-        accessor.save(JpaExchangeRateEntity.builder()
+    private void createMockExchangeRates(ExchangeRateRepository accessor) {
+        accessor.save(ExchangeRateEntity.builder()
                 .currency(Currency.GBP)
                 .rateToUsd(new BigDecimal("1.23"))
                 .build());
 
-        accessor.save(JpaExchangeRateEntity.builder()
+        accessor.save(ExchangeRateEntity.builder()
                 .currency(Currency.USD)
                 .rateToUsd(BigDecimal.ONE)
                 .build());
     }
 
-    private void logCreatedExchangeRates(JpaExchangeRateAccessor accessor) {
-        final List<JpaExchangeRateEntity> accounts = accessor.findAll(Pageable.unpaged())
+    private void logCreatedExchangeRates(ExchangeRateRepository accessor) {
+        final List<ExchangeRateEntity> accounts = accessor.findAll(Pageable.unpaged())
                 .get()
                 .toList();
         log.info("Created the following mock exchange rates for the dev setup: {}", accounts);

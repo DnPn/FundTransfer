@@ -5,5 +5,5 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @ConditionalOnBean(SqlCurrencyConversionService.class)
-interface JpaExchangeRateAccessor extends JpaRepository<JpaExchangeRateEntity, Currency> {
+interface ExchangeRateRepository extends JpaRepository<ExchangeRateEntity, Currency> {
 }

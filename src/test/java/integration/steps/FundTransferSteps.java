@@ -6,8 +6,8 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.dnpn.fundtransfer.account.accessor.impl.JpaAccountAccessor;
-import io.dnpn.fundtransfer.account.accessor.impl.JpaAccountEntity;
+import io.dnpn.fundtransfer.account.AccountEntity;
+import io.dnpn.fundtransfer.account.AccountRepository;
 import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.transfer.api.TransferApiRequest;
@@ -30,17 +30,17 @@ public class FundTransferSteps {
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     private static final long NOT_EXITING_ACCOUNT_ID = 999;
-    private static final JpaAccountEntity SOURCE_ACCOUNT = JpaAccountEntity.builder()
+    private static final AccountEntity SOURCE_ACCOUNT = AccountEntity.builder()
             .id(123)
             .balance(new BigDecimal("47.21"))
             .currency(Currency.GBP)
             .build();
-    private static final JpaAccountEntity TARGET_ACCOUNT = JpaAccountEntity.builder()
+    private static final AccountEntity TARGET_ACCOUNT = AccountEntity.builder()
             .id(456)
             .balance(new BigDecimal("10000.19"))
             .currency(Currency.JPY)
             .build();
-    private static final Collection<JpaAccountEntity> ACCOUNTS = List.of(SOURCE_ACCOUNT, TARGET_ACCOUNT);
+    private static final Collection<AccountEntity> ACCOUNTS = List.of(SOURCE_ACCOUNT, TARGET_ACCOUNT);
 
     private static final BigDecimal VALID_TRANSFER_AMOUNT = new BigDecimal("25");
     private static final BigDecimal TOO_BIG_TRANSFER_AMOUNT = new BigDecimal("50");
@@ -81,7 +81,7 @@ public class FundTransferSteps {
     @Autowired
     private ApplicationApiAccessor apiAccessor;
     @Autowired
-    private JpaAccountAccessor accountAccessor;
+    private AccountRepository accountAccessor;
 
 
     @Before
@@ -194,7 +194,7 @@ public class FundTransferSteps {
         currencyConversionApiMock.mockNextResponse(response);
     }
 
-    private JpaAccountEntity getUpdatedAccount(JpaAccountEntity account) {
+    private AccountEntity getUpdatedAccount(AccountEntity account) {
         return accountAccessor.findById(account.getId()).get();
     }
 }

@@ -1,7 +1,7 @@
 package io.dnpn.fundtransfer.transfer.service;
 
 import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
+import io.dnpn.fundtransfer.account.AccountService;
 import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
@@ -39,7 +39,7 @@ class TransferServiceTest {
     private Account creditAccount;
 
     @Mock
-    private AccountAccessor accountAccessor;
+    private AccountService accountService;
     @Mock
     private CurrencyConversionService conversionService;
     @InjectMocks
@@ -78,7 +78,7 @@ class TransferServiceTest {
 
     @Test
     void GIVEN_debitAccountNotFound_WHEN_transfer_THEN_throwsIllegalTransfer() {
-        doReturn(Optional.empty()).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
+        doReturn(Optional.empty()).when(accountService).getById(DEBIT_ACCOUNT_ID);
 
         assertThrows(IllegalTransferException.class, () -> transferService.transfer(REQUEST));
     }
@@ -86,15 +86,15 @@ class TransferServiceTest {
     @Test
     void GIVEN_debitAccountWithNotEnoughMoney_WHEN_transfer_THEN_throwsIllegalTransfer() {
         debitAccount.setBalance(AMOUNT.subtract(BigDecimal.ONE));
-        doReturn(Optional.of(debitAccount)).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
+        doReturn(Optional.of(debitAccount)).when(accountService).getById(DEBIT_ACCOUNT_ID);
 
         assertThrows(IllegalTransferException.class, () -> transferService.transfer(REQUEST));
     }
 
     @Test
     void GIVEN_creditAccountNotFound_WHEN_transfer_THEN_throwsIllegalTransfer() {
-        doReturn(Optional.of(debitAccount)).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
-        doReturn(Optional.empty()).when(accountAccessor).getById(CREDIT_ACCOUNT_ID);
+        doReturn(Optional.of(debitAccount)).when(accountService).getById(DEBIT_ACCOUNT_ID);
+        doReturn(Optional.empty()).when(accountService).getById(CREDIT_ACCOUNT_ID);
 
         assertThrows(IllegalTransferException.class, () -> transferService.transfer(REQUEST));
     }
@@ -106,7 +106,7 @@ class TransferServiceTest {
                 .fromAccountId(DEBIT_ACCOUNT_ID)
                 .toAccountId(DEBIT_ACCOUNT_ID)
                 .build();
-        doReturn(Optional.of(debitAccount)).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
+        doReturn(Optional.of(debitAccount)).when(accountService).getById(DEBIT_ACCOUNT_ID);
 
         assertThrows(IllegalTransferException.class, () -> transferService.transfer(request));
     }
@@ -130,7 +130,7 @@ class TransferServiceTest {
         transferService.transfer(REQUEST);
 
         assertEquals(updatedBalance, debitAccount.getBalance());
-        verify(accountAccessor).update(debitAccount);
+        verify(accountService).update(debitAccount);
     }
 
     @SneakyThrows
@@ -145,12 +145,12 @@ class TransferServiceTest {
         transferService.transfer(REQUEST);
 
         assertEquals(updatedBalance, creditAccount.getBalance());
-        verify(accountAccessor).update(creditAccount);
+        verify(accountService).update(creditAccount);
     }
 
     private void mockValidAccountAccess() {
-        doReturn(Optional.of(debitAccount)).when(accountAccessor).getById(DEBIT_ACCOUNT_ID);
-        doReturn(Optional.of(creditAccount)).when(accountAccessor).getById(CREDIT_ACCOUNT_ID);
+        doReturn(Optional.of(debitAccount)).when(accountService).getById(DEBIT_ACCOUNT_ID);
+        doReturn(Optional.of(creditAccount)).when(accountService).getById(CREDIT_ACCOUNT_ID);
     }
 
 

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Builder
 record AmountConversionCalculatorRequest(
         @NonNull BigDecimal amount,
-        @NonNull JpaExchangeRateEntity sourceExchangeRate,
-        @NonNull JpaExchangeRateEntity targetExchangeRate
+        @NonNull ExchangeRateEntity sourceExchangeRate,
+        @NonNull ExchangeRateEntity targetExchangeRate
 ) {
 }

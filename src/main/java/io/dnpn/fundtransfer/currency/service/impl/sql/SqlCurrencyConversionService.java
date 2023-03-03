@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 )
 public class SqlCurrencyConversionService implements CurrencyConversionService {
 
-    private final JpaExchangeRateAccessor jpaAccessor;
+    private final ExchangeRateRepository repository;
     private final AmountConversionCalculator calculator;
 
     @Override
@@ -30,8 +30,8 @@ public class SqlCurrencyConversionService implements CurrencyConversionService {
         if (request.fromCurrency() == request.toCurrency()) {
             return request.amount();
         }
-        final JpaExchangeRateEntity sourceExchangeRate = getExchangeRate(request.fromCurrency());
-        final JpaExchangeRateEntity targetExchangeRate = getExchangeRate(request.toCurrency());
+        final ExchangeRateEntity sourceExchangeRate = getExchangeRate(request.fromCurrency());
+        final ExchangeRateEntity targetExchangeRate = getExchangeRate(request.toCurrency());
 
         final AmountConversionCalculatorRequest conversionRequest = AmountConversionCalculatorRequest.builder()
                 .sourceExchangeRate(sourceExchangeRate)
@@ -41,8 +41,8 @@ public class SqlCurrencyConversionService implements CurrencyConversionService {
         return calculator.convert(conversionRequest);
     }
 
-    private JpaExchangeRateEntity getExchangeRate(Currency currency) throws CurrencyConversionException {
-        return jpaAccessor.findById(currency)
+    private ExchangeRateEntity getExchangeRate(Currency currency) throws CurrencyConversionException {
+        return repository.findById(currency)
                 .orElseThrow(() -> supplyCurrencyNotFoundException(currency));
     }
 

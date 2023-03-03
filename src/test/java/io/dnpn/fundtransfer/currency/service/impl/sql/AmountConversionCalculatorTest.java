@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AmountConversionCalculatorTest {
 
     private static final BigDecimal AMOUNT = new BigDecimal("12345.67");
-    private static final JpaExchangeRateEntity SOURCE_RATE = JpaExchangeRateEntity.builder()
+    private static final ExchangeRateEntity SOURCE_RATE = ExchangeRateEntity.builder()
             .rateToUsd(new BigDecimal("1.23"))
             .currency(Currency.GBP)
             .build();
-    private static final JpaExchangeRateEntity TARGET_RATE = JpaExchangeRateEntity.builder()
+    private static final ExchangeRateEntity TARGET_RATE = ExchangeRateEntity.builder()
             .rateToUsd(new BigDecimal("0.0076"))
             .currency(Currency.JPY)
             .build();
@@ -41,7 +41,7 @@ class AmountConversionCalculatorTest {
     @ParameterizedTest
     @MethodSource(METHOD_SOURCE_INVALID_RATE_TO_USD)
     void GIVEN_invalidSourceRateToUsd_WHEN_convert_THEN_throwsCurrencyConversion(BigDecimal invalidRate) {
-        JpaExchangeRateEntity sourceRate = JpaExchangeRateEntity.builder()
+        ExchangeRateEntity sourceRate = ExchangeRateEntity.builder()
                 .rateToUsd(invalidRate)
                 .currency(SOURCE_RATE.getCurrency())
                 .build();
@@ -57,7 +57,7 @@ class AmountConversionCalculatorTest {
     @ParameterizedTest
     @MethodSource(METHOD_SOURCE_INVALID_RATE_TO_USD)
     void GIVEN_invalidTargetRateToUsd_WHEN_convert_THEN_throwsCurrencyConversion(BigDecimal invalidRate) {
-        JpaExchangeRateEntity targetRate = JpaExchangeRateEntity.builder()
+        ExchangeRateEntity targetRate = ExchangeRateEntity.builder()
                 .rateToUsd(invalidRate)
                 .currency(TARGET_RATE.getCurrency())
                 .build();

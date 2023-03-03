@@ -1,7 +1,5 @@
-package io.dnpn.fundtransfer.account.accessor.impl;
+package io.dnpn.fundtransfer.account;
 
-import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.AccountTestHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,29 +18,29 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class SqlAccountAccessorTest {
-    private static final JpaAccountEntity JPA_ACCOUNT_A = JpaAccountEntity.builder()
+class AccountServiceTest {
+    private static final AccountEntity JPA_ACCOUNT_A = AccountEntity.builder()
             .id(AccountTestHelper.ID_ACCOUNT_A)
             .balance(AccountTestHelper.BALANCE_ACCOUNT_A)
             .currency(AccountTestHelper.CURRENCY_ACCOUNT_A)
             .build();
-    private static final JpaAccountEntity JPA_ACCOUNT_B = JpaAccountEntity.builder()
+    private static final AccountEntity JPA_ACCOUNT_B = AccountEntity.builder()
             .id(AccountTestHelper.ID_ACCOUNT_B)
             .balance(AccountTestHelper.BALANCE_ACCOUNT_B)
             .currency(AccountTestHelper.CURRENCY_ACCOUNT_B)
             .build();
 
     @Mock
-    private JpaAccountAccessor jpaAccessor;
+    private AccountRepository jpaAccessor;
     @InjectMocks
-    private SqlAccountAccessor sqlAccessor;
+    private AccountService sqlAccessor;
 
     @Test
     void WHEN_list_THEN_returnAccounts() {
         Pageable pageable = Pageable.unpaged();
 
-        List<JpaAccountEntity> jpaList = List.of(JPA_ACCOUNT_A, JPA_ACCOUNT_B);
-        Page<JpaAccountEntity> jpaPage = new PageImpl<>(jpaList);
+        List<AccountEntity> jpaList = List.of(JPA_ACCOUNT_A, JPA_ACCOUNT_B);
+        Page<AccountEntity> jpaPage = new PageImpl<>(jpaList);
         doReturn(jpaPage).when(jpaAccessor).findAll(pageable);
 
         Page<Account> actualPage = sqlAccessor.list(pageable);

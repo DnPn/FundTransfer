@@ -1,7 +1,5 @@
-package io.dnpn.fundtransfer.account.api;
+package io.dnpn.fundtransfer.account;
 
-import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -26,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountAccessor accessor;
+    private final AccountService service;
 
     /**
      * Gets an account by its unique identifier.
@@ -42,7 +40,7 @@ public class AccountController {
             })
     @GetMapping("/account/{id}")
     public ResponseEntity<Account> getById(@PathVariable long id) {
-        final Optional<Account> account = accessor.getById(id);
+        final Optional<Account> account = service.getById(id);
         return ResponseEntity.of(account);
     }
 
@@ -60,6 +58,6 @@ public class AccountController {
     })
     @GetMapping("/accounts")
     public ResponseEntity<Page<Account>> getAll(@Parameter(hidden = true) @NonNull Pageable pageable) {
-        return ResponseEntity.ok(accessor.list(pageable));
+        return ResponseEntity.ok(service.list(pageable));
     }
 }

@@ -1,5 +1,6 @@
-package io.dnpn.fundtransfer.currency.service.impl.sql;
+package io.dnpn.fundtransfer.account;
 
+import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.Currency;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,16 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "exchange_rate")
+@Table(name = "account")
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class JpaExchangeRateEntity {
+public class AccountEntity {
+
     @Id
+    private long id;
     private Currency currency;
-    @Column(precision = 20, scale = 10)
-    private BigDecimal rateToUsd;
+    @Column(precision = MoneyHandling.PRECISION_FOR_MONEY, scale = MoneyHandling.SCALE_FOR_MONEY)
+    private BigDecimal balance;
 }

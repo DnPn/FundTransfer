@@ -1,4 +1,4 @@
-package io.dnpn.fundtransfer.account.accessor.impl;
+package io.dnpn.fundtransfer.account;
 
 import io.dnpn.fundtransfer.common.ApplicationProfile;
 import io.dnpn.fundtransfer.common.annotation.ExcludeFromJacocoGeneratedReport;
@@ -20,38 +20,38 @@ import java.util.List;
 @Slf4j
 @Profile(ApplicationProfile.DEV)
 @Configuration
-@ConditionalOnBean(SqlAccountAccessor.class)
+@ConditionalOnBean(AccountService.class)
 @ExcludeFromJacocoGeneratedReport(reason = "This class is used only in a dev environment to generate stub data.")
 public class SqlAccountDevSetup {
 
     @Bean
-    CommandLineRunner initAccountDatabase(JpaAccountAccessor accessor) {
+    CommandLineRunner initAccountDatabase(AccountRepository accessor) {
         return args -> {
             createMockAccounts(accessor);
             logCreatedAccounts(accessor);
         };
     }
 
-    private void createMockAccounts(JpaAccountAccessor accessor) {
-        accessor.save(JpaAccountEntity.builder()
+    private void createMockAccounts(AccountRepository accessor) {
+        accessor.save(AccountEntity.builder()
                 .id(123)
                 .balance(new BigDecimal("1234.56"))
                 .currency(Currency.USD)
                 .build());
 
-        accessor.save(JpaAccountEntity.builder()
+        accessor.save(AccountEntity.builder()
                 .id(456)
                 .balance(new BigDecimal("450001.78"))
                 .currency(Currency.GBP)
                 .build());
 
-        accessor.save(JpaAccountEntity.builder()
+        accessor.save(AccountEntity.builder()
                 .id(789)
                 .balance(new BigDecimal("1000000.00"))
                 .currency(Currency.JPY)
                 .build());
 
-        accessor.save(JpaAccountEntity.builder()
+        accessor.save(AccountEntity.builder()
                 .id(101)
                 .balance(new BigDecimal("41200"))
                 .currency(Currency.JPY)
@@ -59,8 +59,8 @@ public class SqlAccountDevSetup {
 
     }
 
-    private void logCreatedAccounts(JpaAccountAccessor accessor) {
-        final List<JpaAccountEntity> accounts = accessor.findAll(Pageable.unpaged())
+    private void logCreatedAccounts(AccountRepository accessor) {
+        final List<AccountEntity> accounts = accessor.findAll(Pageable.unpaged())
                 .get()
                 .toList();
         log.info("Created the following mock accounts for the dev setup: {}", accounts);

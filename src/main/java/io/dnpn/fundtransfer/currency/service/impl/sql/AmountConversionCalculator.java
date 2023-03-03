@@ -38,7 +38,7 @@ class AmountConversionCalculator {
         return sourceCurrencyRateToUsd.divide(targetCurrencyRateToUsd, DIVISION_MATH_CONTEXT);
     }
 
-    private BigDecimal validateAndGetRateToUsd(JpaExchangeRateEntity exchangeRate) throws CurrencyConversionException {
+    private BigDecimal validateAndGetRateToUsd(ExchangeRateEntity exchangeRate) throws CurrencyConversionException {
         final BigDecimal rateToUsd = exchangeRate.getRateToUsd();
 
         if (rateToUsd.compareTo(BigDecimal.ZERO) <= 0) {

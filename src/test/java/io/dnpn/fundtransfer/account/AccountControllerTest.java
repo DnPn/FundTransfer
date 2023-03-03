@@ -1,8 +1,5 @@
-package io.dnpn.fundtransfer.account.api;
+package io.dnpn.fundtransfer.account;
 
-import io.dnpn.fundtransfer.account.Account;
-import io.dnpn.fundtransfer.account.AccountTestHelper;
-import io.dnpn.fundtransfer.account.accessor.AccountAccessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,14 +21,14 @@ import static org.mockito.Mockito.doReturn;
 class AccountControllerTest {
 
     @Mock
-    private AccountAccessor accessor;
+    private AccountService service;
     @InjectMocks
     private AccountController controller;
 
     @Test
     void GIVEN_accountExists_WHEN_getById_THEN_returnAccount() {
         doReturn(Optional.of(AccountTestHelper.ACCOUNT_A))
-                .when(accessor)
+                .when(service)
                 .getById(AccountTestHelper.ID_ACCOUNT_A);
 
         ResponseEntity<Account> response = controller.getById(AccountTestHelper.ID_ACCOUNT_A);
@@ -43,7 +40,7 @@ class AccountControllerTest {
     @Test
     void GIVEN_accountNotFound_WHEN_getById_THEN_returnNotFound() {
         doReturn(Optional.empty())
-                .when(accessor)
+                .when(service)
                 .getById(AccountTestHelper.ID_ACCOUNT_A);
 
         ResponseEntity<Account> response = controller.getById(AccountTestHelper.ID_ACCOUNT_A);
@@ -66,7 +63,7 @@ class AccountControllerTest {
         Pageable pageable = Pageable.unpaged();
         List<Account> accountList = List.of(AccountTestHelper.ACCOUNT_A, AccountTestHelper.ACCOUNT_B);
         Page<Account> accountPage = new PageImpl<>(accountList);
-        doReturn(accountPage).when(accessor).list(pageable);
+        doReturn(accountPage).when(service).list(pageable);
 
         ResponseEntity<Page<Account>> response = controller.getAll(pageable);
 
