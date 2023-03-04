@@ -25,4 +25,12 @@ public class AccountEntity {
     private Currency currency;
     @Column(precision = MoneyHandling.PRECISION_FOR_MONEY, scale = MoneyHandling.SCALE_FOR_MONEY)
     private BigDecimal balance;
+
+    public Account toDto() {
+        return Account.builder()
+                .accountId(this.id)
+                .currency(this.currency)
+                .balance(this.balance)
+                .build();
+    }
 }

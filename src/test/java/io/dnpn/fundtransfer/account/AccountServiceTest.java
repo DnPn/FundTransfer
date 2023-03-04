@@ -12,6 +12,12 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
+import static io.dnpn.fundtransfer.account.AccountTestHelper.BALANCE_ACCOUNT_A;
+import static io.dnpn.fundtransfer.account.AccountTestHelper.BALANCE_ACCOUNT_B;
+import static io.dnpn.fundtransfer.account.AccountTestHelper.CURRENCY_ACCOUNT_A;
+import static io.dnpn.fundtransfer.account.AccountTestHelper.CURRENCY_ACCOUNT_B;
+import static io.dnpn.fundtransfer.account.AccountTestHelper.ID_ACCOUNT_A;
+import static io.dnpn.fundtransfer.account.AccountTestHelper.ID_ACCOUNT_B;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
@@ -19,15 +25,15 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
-    private static final AccountEntity JPA_ACCOUNT_A = AccountEntity.builder()
-            .id(AccountTestHelper.ID_ACCOUNT_A)
-            .balance(AccountTestHelper.BALANCE_ACCOUNT_A)
-            .currency(AccountTestHelper.CURRENCY_ACCOUNT_A)
+    private static final AccountEntity ACCOUNT_A = AccountEntity.builder()
+            .id(ID_ACCOUNT_A)
+            .balance(BALANCE_ACCOUNT_A)
+            .currency(CURRENCY_ACCOUNT_A)
             .build();
-    private static final AccountEntity JPA_ACCOUNT_B = AccountEntity.builder()
-            .id(AccountTestHelper.ID_ACCOUNT_B)
-            .balance(AccountTestHelper.BALANCE_ACCOUNT_B)
-            .currency(AccountTestHelper.CURRENCY_ACCOUNT_B)
+    private static final AccountEntity ACCOUNT_B = AccountEntity.builder()
+            .id(ID_ACCOUNT_B)
+            .balance(BALANCE_ACCOUNT_B)
+            .currency(CURRENCY_ACCOUNT_B)
             .build();
 
     @Mock
@@ -39,14 +45,14 @@ class AccountServiceTest {
     void WHEN_list_THEN_returnAccounts() {
         Pageable pageable = Pageable.unpaged();
 
-        List<AccountEntity> jpaList = List.of(JPA_ACCOUNT_A, JPA_ACCOUNT_B);
+        List<AccountEntity> jpaList = List.of(ACCOUNT_A, ACCOUNT_B);
         Page<AccountEntity> jpaPage = new PageImpl<>(jpaList);
         doReturn(jpaPage).when(repository).findAll(pageable);
 
-        Page<Account> actualPage = service.list(pageable);
+        var actualPage = service.list(pageable);
 
-        List<Account> expectedAccounts = List.of(AccountTestHelper.ACCOUNT_A, AccountTestHelper.ACCOUNT_B);
-        Page<Account> expectedPage = new PageImpl<>(expectedAccounts);
+        var expectedAccounts = List.of(ACCOUNT_A, ACCOUNT_B);
+        var expectedPage = new PageImpl<>(expectedAccounts);
         assertEquals(expectedPage, actualPage);
     }
 
@@ -57,13 +63,13 @@ class AccountServiceTest {
 
     @Test
     void GIVEN_accountExists_WHEN_getById_THEN_returnAccount() {
-        doReturn(Optional.of(JPA_ACCOUNT_A))
+        doReturn(Optional.of(ACCOUNT_A))
                 .when(repository)
-                .findById(AccountTestHelper.ID_ACCOUNT_A);
+                .findById(ACCOUNT_A.getId());
 
-        Optional<Account> actual = service.getById(AccountTestHelper.ID_ACCOUNT_A);
+        var actual = service.getById(ACCOUNT_A.getId());
 
-        Optional<Account> expected = Optional.of(AccountTestHelper.ACCOUNT_A);
+        var expected = Optional.of(ACCOUNT_A);
         assertEquals(expected, actual);
     }
 
@@ -71,9 +77,9 @@ class AccountServiceTest {
     void GIVEN_accountNotFound_WHEN_getById_THEN_returnEmpty() {
         doReturn(Optional.empty())
                 .when(repository)
-                .findById(AccountTestHelper.ID_ACCOUNT_A);
+                .findById(ACCOUNT_A.getId());
 
-        Optional<Account> actual = service.getById(AccountTestHelper.ID_ACCOUNT_A);
+        var actual = service.getById(ACCOUNT_A.getId());
 
         assertEquals(Optional.empty(), actual);
     }
@@ -85,17 +91,9 @@ class AccountServiceTest {
 
     @Test
     void WHEN_update_THEN_callSaveOnUpdatedContact() {
-        var accountABeforeUpdate = JPA_ACCOUNT_A.toBuilder()
-                .balance(AccountTestHelper.BALANCE_ACCOUNT_B)
-                .currency(AccountTestHelper.CURRENCY_ACCOUNT_B)
-                .build();
-        doReturn(Optional.of(accountABeforeUpdate))
-                .when(repository)
-                .findById(AccountTestHelper.ID_ACCOUNT_A);
+        service.update(ACCOUNT_A);
 
-        service.update(AccountTestHelper.ACCOUNT_A);
-
-        verify(repository).save(JPA_ACCOUNT_A);
+        verify(repository).save(ACCOUNT_A);
     }
 
 }

@@ -14,12 +14,24 @@ public final class AccountTestHelper {
             .balance(BALANCE_ACCOUNT_A)
             .currency(CURRENCY_ACCOUNT_A)
             .build();
+    public static final AccountEntity ACCOUNT_ENTITY_A = AccountEntity.builder()
+            .id(ID_ACCOUNT_A)
+            .version(123)
+            .balance(BALANCE_ACCOUNT_A)
+            .currency(CURRENCY_ACCOUNT_A)
+            .build();
 
     public static final long ID_ACCOUNT_B = 456;
     public static final Currency CURRENCY_ACCOUNT_B = Currency.USD;
     public static final BigDecimal BALANCE_ACCOUNT_B = new BigDecimal("787.62");
     public static final Account ACCOUNT_B = Account.builder()
             .accountId(ID_ACCOUNT_B)
+            .balance(BALANCE_ACCOUNT_B)
+            .currency(CURRENCY_ACCOUNT_B)
+            .build();
+    public static final AccountEntity ACCOUNT_ENTITY_B = AccountEntity.builder()
+            .id(ID_ACCOUNT_B)
+            .version(456)
             .balance(BALANCE_ACCOUNT_B)
             .currency(CURRENCY_ACCOUNT_B)
             .build();

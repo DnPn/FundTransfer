@@ -1,6 +1,6 @@
 package io.dnpn.fundtransfer.transfer.service;
 
-import io.dnpn.fundtransfer.account.Account;
+import io.dnpn.fundtransfer.account.AccountEntity;
 import io.dnpn.fundtransfer.account.AccountService;
 import io.dnpn.fundtransfer.common.MoneyHandling;
 import io.dnpn.fundtransfer.currency.service.CurrencyConversionException;
@@ -35,27 +35,27 @@ public class TransferService {
      */
     @Transactional
     public void transfer(@NonNull TransferRequest request) throws IllegalTransferException, TransferFailureException {
-        final BigDecimal debitedAmount = request.amount();
+        final var debitedAmount = request.amount();
         assertValidAmount(debitedAmount);
         log.debug("Transfer amount {} is valid.", debitedAmount);
 
-        final Account debitAccount = getAccountById(request.fromAccountId());
+        final var debitAccount = getAccountById(request.fromAccountId());
         assertSufficientBalance(debitAccount, debitedAmount);
         log.debug("The balance of the debit account is sufficient for the transfer.");
 
-        final Account creditAccount = getAccountById(request.toAccountId());
+        final var creditAccount = getAccountById(request.toAccountId());
         assertDifferentAccounts(debitAccount, creditAccount);
         final BigDecimal creditedAmount = calculateDebitedAmount(debitAccount, creditAccount, debitedAmount);
 
         debitAccount(debitAccount, debitedAmount);
         creditAccount(creditAccount, creditedAmount);
         log.debug("Transfer completed: {} {} debited from the account {} | {} {} credited to the account {}",
-                debitedAmount, debitAccount.getCurrency(), debitAccount.getAccountId(),
-                creditedAmount, creditAccount.getCurrency(), creditAccount.getAccountId()
+                debitedAmount, debitAccount.getCurrency(), debitAccount.getId(),
+                creditedAmount, creditAccount.getCurrency(), creditAccount.getId()
         );
     }
 
-    private Account getAccountById(long accountId) throws IllegalTransferException {
+    private AccountEntity getAccountById(long accountId) throws IllegalTransferException {
         return accountService.getById(accountId)
                 .orElseThrow(() -> supplyAccountNotFoundException(accountId));
     }
@@ -80,23 +80,23 @@ public class TransferService {
         }
     }
 
-    private void assertSufficientBalance(Account debitedAccount, BigDecimal debitedAmount) throws IllegalTransferException {
+    private void assertSufficientBalance(AccountEntity debitedAccount, BigDecimal debitedAmount) throws IllegalTransferException {
         if (debitedAmount.compareTo(debitedAccount.getBalance()) > 0) {
             final String message = String.format("Invalid transfer of %.2f %s from the account %s: the amount exceeds" +
-                    " the balance.", debitedAmount, debitedAccount.getCurrency(), debitedAccount.getAccountId());
+                    " the balance.", debitedAmount, debitedAccount.getCurrency(), debitedAccount.getId());
             throw new IllegalTransferException(message);
         }
     }
 
-    private void assertDifferentAccounts(Account debitAccount, Account creditAccount) throws IllegalTransferException {
-        if (debitAccount.getAccountId() == creditAccount.getAccountId()) {
+    private void assertDifferentAccounts(AccountEntity debitAccount, AccountEntity creditAccount) throws IllegalTransferException {
+        if (debitAccount.getId() == creditAccount.getId()) {
             final String message = String.format("The same account %d was chosen as a debit and credit account, " +
-                    "please choose different accounts to make a transfer.", debitAccount.getAccountId());
+                    "please choose different accounts to make a transfer.", debitAccount.getId());
             throw new IllegalTransferException(message);
         }
     }
 
-    private BigDecimal calculateDebitedAmount(Account debitAccount, Account creditAccount, BigDecimal debitedAmount) throws TransferFailureException {
+    private BigDecimal calculateDebitedAmount(AccountEntity debitAccount, AccountEntity creditAccount, BigDecimal debitedAmount) throws TransferFailureException {
         try {
             final var request = CurrencyConversionRequest.builder()
                     .amount(debitedAmount)
@@ -118,17 +118,17 @@ public class TransferService {
         return amount.setScale(MoneyHandling.SCALE_FOR_MONEY, MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
     }
 
-    private void debitAccount(Account account, BigDecimal amount) {
+    private void debitAccount(AccountEntity account, BigDecimal amount) {
         final BigDecimal newBalance = account.getBalance().subtract(amount);
         updateAccountBalance(account, newBalance);
     }
 
-    private void creditAccount(Account account, BigDecimal amount) {
+    private void creditAccount(AccountEntity account, BigDecimal amount) {
         final BigDecimal newBalance = account.getBalance().add(amount);
         updateAccountBalance(account, newBalance);
     }
 
-    private void updateAccountBalance(Account account, BigDecimal newBalance) {
+    private void updateAccountBalance(AccountEntity account, BigDecimal newBalance) {
         account.setBalance(newBalance);
         accountService.update(account);
     }

@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 /**
  * Controller exposing the available accounts.
  */
@@ -40,7 +38,7 @@ public class AccountController {
             })
     @GetMapping("/account/{id}")
     public ResponseEntity<Account> getById(@PathVariable long id) {
-        final Optional<Account> account = service.getById(id);
+        final var account = service.getById(id).map(AccountEntity::toDto);
         return ResponseEntity.of(account);
     }
 
@@ -58,6 +56,7 @@ public class AccountController {
     })
     @GetMapping("/accounts")
     public ResponseEntity<Page<Account>> getAll(@Parameter(hidden = true) @NonNull Pageable pageable) {
-        return ResponseEntity.ok(service.list(pageable));
+        var accounts = service.list(pageable).map(AccountEntity::toDto);
+        return ResponseEntity.ok(accounts);
     }
 }
