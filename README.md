@@ -34,6 +34,15 @@ Pet project with Spring Boot modelling a fund transfers between 2 accounts:
     2. To set the JDK path: `export JAVA_HOME=/path/to/jdk-17-or-more/`
 2. Run `./mvnw clean spring-boot:run`
 
+### From Docker
+
+1. Build the image: `docker build -t dnpn/fundtransfer .`
+2. Run the container: `docker run -p 8080:8080 --name fundtransfer dnpn/fundtransfer`
+
+To stop the container you can either:
+* press `Ctrl + C` from the terminal attached to the running container
+* from another terminal run `docker stop fundtransfer`
+
 ### Health check
 
 To verify that the application is running you can execute the following cURL command:
