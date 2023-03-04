@@ -57,7 +57,7 @@ public class TransferController {
 
         executeTransfer(request);
 
-        final TransferApiResponse response = TransferApiResponse.builder()
+        final var response = TransferApiResponse.builder()
                 .request(request)
                 .timestamp(LocalDateTime.now(clock))
                 .message(SUCCESSFUL_TRANSFER_MESSAGE)

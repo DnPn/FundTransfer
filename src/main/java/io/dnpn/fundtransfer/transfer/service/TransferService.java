@@ -45,7 +45,7 @@ public class TransferService {
 
         final var creditAccount = getAccountById(request.toAccountId());
         assertDifferentAccounts(debitAccount, creditAccount);
-        final BigDecimal creditedAmount = calculateDebitedAmount(debitAccount, creditAccount, debitedAmount);
+        final var creditedAmount = calculateDebitedAmount(debitAccount, creditAccount, debitedAmount);
 
         debitAccount(debitAccount, debitedAmount);
         creditAccount(creditAccount, creditedAmount);
@@ -61,7 +61,7 @@ public class TransferService {
     }
 
     private IllegalTransferException supplyAccountNotFoundException(long accountId) {
-        final String message = String.format("No account found with the identifier %d.", accountId);
+        final var message = String.format("No account found with the identifier %d.", accountId);
         return new IllegalTransferException(message);
     }
 
@@ -75,14 +75,14 @@ public class TransferService {
      */
     private void assertValidAmount(BigDecimal amount) throws IllegalTransferException {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            final String message = String.format("Invalid transfer amount: %.2f. The amount must be positive.", amount);
+            final var message = String.format("Invalid transfer amount: %.2f. The amount must be positive.", amount);
             throw new IllegalTransferException(message);
         }
     }
 
     private void assertSufficientBalance(AccountEntity debitedAccount, BigDecimal debitedAmount) throws IllegalTransferException {
         if (debitedAmount.compareTo(debitedAccount.getBalance()) > 0) {
-            final String message = String.format("Invalid transfer of %.2f %s from the account %s: the amount exceeds" +
+            final var message = String.format("Invalid transfer of %.2f %s from the account %s: the amount exceeds" +
                     " the balance.", debitedAmount, debitedAccount.getCurrency(), debitedAccount.getId());
             throw new IllegalTransferException(message);
         }
@@ -90,7 +90,7 @@ public class TransferService {
 
     private void assertDifferentAccounts(AccountEntity debitAccount, AccountEntity creditAccount) throws IllegalTransferException {
         if (debitAccount.getId() == creditAccount.getId()) {
-            final String message = String.format("The same account %d was chosen as a debit and credit account, " +
+            final var message = String.format("The same account %d was chosen as a debit and credit account, " +
                     "please choose different accounts to make a transfer.", debitAccount.getId());
             throw new IllegalTransferException(message);
         }
@@ -107,7 +107,7 @@ public class TransferService {
             return scaleConvertedAmountToMoney(convertedAmount);
 
         } catch (CurrencyConversionException exception) {
-            final String message = String.format("Unsupported currency conversion from %s to %s.",
+            final var message = String.format("Unsupported currency conversion from %s to %s.",
                     debitAccount.getCurrency(), creditAccount.getCurrency());
             log.error(message, exception);
             throw new TransferFailureException(message, exception);
@@ -119,12 +119,12 @@ public class TransferService {
     }
 
     private void debitAccount(AccountEntity account, BigDecimal amount) {
-        final BigDecimal newBalance = account.getBalance().subtract(amount);
+        final var newBalance = account.getBalance().subtract(amount);
         updateAccountBalance(account, newBalance);
     }
 
     private void creditAccount(AccountEntity account, BigDecimal amount) {
-        final BigDecimal newBalance = account.getBalance().add(amount);
+        final var newBalance = account.getBalance().add(amount);
         updateAccountBalance(account, newBalance);
     }
 

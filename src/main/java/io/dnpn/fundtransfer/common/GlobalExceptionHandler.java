@@ -32,23 +32,23 @@ public class GlobalExceptionHandler {
             " request complies with the API documentation.";
 
     @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity httpMessageConversionExceptionHandler() {
+    public ResponseEntity<String> httpMessageConversionExceptionHandler() {
         return new ResponseEntity(INVALID_HTTP_REQUEST_MESSAGE, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity responseStatusExceptionHandler(ResponseStatusException exception) {
+    public ResponseEntity<String> responseStatusExceptionHandler(ResponseStatusException exception) {
         return new ResponseEntity(exception.getReason(), exception.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity defaultExceptionHandler(Exception exception) {
-        final String requestId = MDC.get(MdcFilter.REQUEST_ID_MDC_FIELD);
+    public ResponseEntity<String> defaultExceptionHandler(Exception exception) {
+        final var requestId = MDC.get(MdcFilter.REQUEST_ID_MDC_FIELD);
 
-        final String serverMessage = String.format(UNEXPECTED_EXCEPTION_SERVER_MESSAGE, requestId);
+        final var serverMessage = String.format(UNEXPECTED_EXCEPTION_SERVER_MESSAGE, requestId);
         log.error(serverMessage, exception);
 
-        final String clientMessage = String.format(UNEXPECTED_EXCEPTION_CLIENT_MESSAGE, requestId);
+        final var clientMessage = String.format(UNEXPECTED_EXCEPTION_CLIENT_MESSAGE, requestId);
         return new ResponseEntity(clientMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

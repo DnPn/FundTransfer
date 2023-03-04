@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Create mock exchange rate values for a development environment.
@@ -25,27 +24,27 @@ import java.util.List;
 public class SqlExchangeRateDevSetup {
 
     @Bean
-    CommandLineRunner initExchangeRateDatabase(ExchangeRateRepository accessor) {
+    CommandLineRunner initExchangeRateDatabase(ExchangeRateRepository repository) {
         return args -> {
-            createMockExchangeRates(accessor);
-            logCreatedExchangeRates(accessor);
+            createMockExchangeRates(repository);
+            logCreatedExchangeRates(repository);
         };
     }
 
-    private void createMockExchangeRates(ExchangeRateRepository accessor) {
-        accessor.save(ExchangeRateEntity.builder()
+    private void createMockExchangeRates(ExchangeRateRepository repository) {
+        repository.save(ExchangeRateEntity.builder()
                 .currency(Currency.GBP)
                 .rateToUsd(new BigDecimal("1.23"))
                 .build());
 
-        accessor.save(ExchangeRateEntity.builder()
+        repository.save(ExchangeRateEntity.builder()
                 .currency(Currency.USD)
                 .rateToUsd(BigDecimal.ONE)
                 .build());
     }
 
-    private void logCreatedExchangeRates(ExchangeRateRepository accessor) {
-        final List<ExchangeRateEntity> accounts = accessor.findAll(Pageable.unpaged())
+    private void logCreatedExchangeRates(ExchangeRateRepository repository) {
+        final var accounts = repository.findAll(Pageable.unpaged())
                 .get()
                 .toList();
         log.info("Created the following mock exchange rates for the dev setup: {}", accounts);

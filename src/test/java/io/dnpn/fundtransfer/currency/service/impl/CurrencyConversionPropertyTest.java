@@ -11,7 +11,9 @@ import org.springframework.core.env.Environment;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})

@@ -47,7 +47,7 @@ class MdcFilterTest {
     @SneakyThrows
     @Test
     void GIVEN_requestIdHeaderIsSet_WHEN_doFilter_THEN_useIt() {
-        String requestId = "abc";
+        var requestId = "abc";
         doReturn(requestId).when(request).getHeader(MdcFilter.REQUEST_ID_HEADER);
 
         filter.doFilter(request, response, filterChain);
@@ -65,7 +65,7 @@ class MdcFilterTest {
 
         filter.doFilter(request, response, filterChain);
 
-        String generatedRequestId = MDC.get(MdcFilter.REQUEST_ID_MDC_FIELD);
+        var generatedRequestId = MDC.get(MdcFilter.REQUEST_ID_MDC_FIELD);
         assertNotNull(generatedRequestId);
         verify(response).setHeader(MdcFilter.REQUEST_ID_HEADER, generatedRequestId);
     }

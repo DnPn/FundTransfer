@@ -22,8 +22,8 @@ class AmountConversionCalculator {
     private static final MathContext DIVISION_MATH_CONTEXT = new MathContext(DIVISION_PRECISION);
 
     BigDecimal convert(@NonNull AmountConversionCalculatorRequest request) throws CurrencyConversionException {
-        final BigDecimal exchangeRate = getExchangeRate(request);
-        final BigDecimal convertedAmount = request.amount().multiply(exchangeRate);
+        final var exchangeRate = getExchangeRate(request);
+        final var convertedAmount = request.amount().multiply(exchangeRate);
 
         log.debug("{} {} = {} {} (exchange rate: {})",
                 request.amount(), request.sourceExchangeRate().getCurrency(),
@@ -33,16 +33,16 @@ class AmountConversionCalculator {
     }
 
     private BigDecimal getExchangeRate(AmountConversionCalculatorRequest request) throws CurrencyConversionException {
-        BigDecimal sourceCurrencyRateToUsd = validateAndGetRateToUsd(request.sourceExchangeRate());
-        BigDecimal targetCurrencyRateToUsd = validateAndGetRateToUsd(request.targetExchangeRate());
+        final var sourceCurrencyRateToUsd = validateAndGetRateToUsd(request.sourceExchangeRate());
+        final var targetCurrencyRateToUsd = validateAndGetRateToUsd(request.targetExchangeRate());
         return sourceCurrencyRateToUsd.divide(targetCurrencyRateToUsd, DIVISION_MATH_CONTEXT);
     }
 
     private BigDecimal validateAndGetRateToUsd(ExchangeRateEntity exchangeRate) throws CurrencyConversionException {
-        final BigDecimal rateToUsd = exchangeRate.getRateToUsd();
+        final var rateToUsd = exchangeRate.getRateToUsd();
 
         if (rateToUsd.compareTo(BigDecimal.ZERO) <= 0) {
-            final String message = String.format("Invalid exchange rate to USD for the currency %s: %.2f",
+            final var message = String.format("Invalid exchange rate to USD for the currency %s: %.2f",
                     exchangeRate.getCurrency(), rateToUsd);
             throw new CurrencyConversionException(message);
         }

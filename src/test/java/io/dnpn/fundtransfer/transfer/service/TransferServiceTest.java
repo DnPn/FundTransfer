@@ -71,7 +71,7 @@ class TransferServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"0", "-1.23"})
     void GIVEN_invalidAmount_WHEN_transfer_THEN_throwsIllegalTransfer(String amount) {
-        TransferRequest request = TransferRequest.builder()
+        var request = TransferRequest.builder()
                 .amount(new BigDecimal(amount))
                 .fromAccountId(DEBIT_ACCOUNT_ID)
                 .toAccountId(CREDIT_ACCOUNT_ID)
@@ -105,7 +105,7 @@ class TransferServiceTest {
 
     @Test
     void GIVEN_sameAccount_WHEN_transfer_THEN_throwsIllegalTransfer() {
-        TransferRequest request = TransferRequest.builder()
+        var request = TransferRequest.builder()
                 .amount(AMOUNT)
                 .fromAccountId(DEBIT_ACCOUNT_ID)
                 .toAccountId(DEBIT_ACCOUNT_ID)
@@ -132,7 +132,7 @@ class TransferServiceTest {
 
         transferService.transfer(REQUEST);
 
-        BigDecimal updatedBalance = debitAccountEntity.getBalance().subtract(AMOUNT);
+        var updatedBalance = debitAccountEntity.getBalance().subtract(AMOUNT);
         debitAccountEntity.setBalance(updatedBalance);
         verify(accountService).update(debitAccountEntity);
     }
@@ -141,13 +141,13 @@ class TransferServiceTest {
     @Test
     void WHEN_transfer_THEN_executeCredit() {
         mockValidAccountAccess();
-        BigDecimal convertedAmount = mockAmountConversion();
-        BigDecimal convertedAmountScaled = convertedAmount.setScale(MoneyHandling.SCALE_FOR_MONEY,
+        var convertedAmount = mockAmountConversion();
+        var convertedAmountScaled = convertedAmount.setScale(MoneyHandling.SCALE_FOR_MONEY,
                 MoneyHandling.ROUNDING_MODE_FOR_CLIENT_CREDIT);
 
         transferService.transfer(REQUEST);
 
-        BigDecimal updatedBalance = creditAccountEntity.getBalance().add(convertedAmountScaled);
+        var updatedBalance = creditAccountEntity.getBalance().add(convertedAmountScaled);
         creditAccountEntity.setBalance(updatedBalance);
         verify(accountService).update(creditAccountEntity);
     }
@@ -160,7 +160,7 @@ class TransferServiceTest {
 
     @SneakyThrows
     private BigDecimal mockAmountConversion() {
-        BigDecimal convertedAmount = new BigDecimal("147.8952475");
+        var convertedAmount = new BigDecimal("147.8952475");
         doReturn(convertedAmount).when(conversionService).convert(any());
         return convertedAmount;
     }

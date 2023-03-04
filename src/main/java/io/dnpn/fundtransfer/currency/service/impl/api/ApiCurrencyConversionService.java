@@ -41,8 +41,8 @@ public class ApiCurrencyConversionService implements CurrencyConversionService {
 
     public ApiCurrencyConversionService(CurrencyConversionProperty currencyConversionProperty,
                                         ApiCurrencyConversionErrorHandler errorHandler) {
-        final String apiKey = currencyConversionProperty.getApiKey();
-        final String baseUrl = currencyConversionProperty.getApiBaseUrl();
+        final var apiKey = currencyConversionProperty.getApiKey();
+        final var baseUrl = currencyConversionProperty.getApiBaseUrl();
         this.webClient = WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader(API_KEY_HEADER, apiKey)

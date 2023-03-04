@@ -30,8 +30,8 @@ public class SqlCurrencyConversionService implements CurrencyConversionService {
         if (request.fromCurrency() == request.toCurrency()) {
             return request.amount();
         }
-        final ExchangeRateEntity sourceExchangeRate = getExchangeRate(request.fromCurrency());
-        final ExchangeRateEntity targetExchangeRate = getExchangeRate(request.toCurrency());
+        final var sourceExchangeRate = getExchangeRate(request.fromCurrency());
+        final var targetExchangeRate = getExchangeRate(request.toCurrency());
 
         final AmountConversionCalculatorRequest conversionRequest = AmountConversionCalculatorRequest.builder()
                 .sourceExchangeRate(sourceExchangeRate)
@@ -47,7 +47,7 @@ public class SqlCurrencyConversionService implements CurrencyConversionService {
     }
 
     private CurrencyConversionException supplyCurrencyNotFoundException(Currency currency) {
-        final String message = String.format("No exchange rate to USD registered for the currency %s", currency);
+        final var message = String.format("No exchange rate to USD registered for the currency %s", currency);
         return new CurrencyConversionException(message);
     }
 }

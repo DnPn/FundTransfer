@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -45,9 +44,9 @@ class AccountServiceTest {
     void WHEN_list_THEN_returnAccounts() {
         Pageable pageable = Pageable.unpaged();
 
-        List<AccountEntity> jpaList = List.of(ACCOUNT_A, ACCOUNT_B);
-        Page<AccountEntity> jpaPage = new PageImpl<>(jpaList);
-        doReturn(jpaPage).when(repository).findAll(pageable);
+        var entityList = List.of(ACCOUNT_A, ACCOUNT_B);
+        var entityPage = new PageImpl<>(entityList);
+        doReturn(entityPage).when(repository).findAll(pageable);
 
         var actualPage = service.list(pageable);
 

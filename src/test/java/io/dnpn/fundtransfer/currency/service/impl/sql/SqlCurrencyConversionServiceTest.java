@@ -16,7 +16,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SqlCurrencyConversionServiceTest {
@@ -53,9 +55,9 @@ class SqlCurrencyConversionServiceTest {
     @SneakyThrows
     @Test
     void GIVEN_sameCurrency_WHEN_convert_THEN_returnSameAmount() {
-        CurrencyConversionRequest request = buildRequestWithSameCurrency(AMOUNT);
+        var request = buildRequestWithSameCurrency(AMOUNT);
 
-        BigDecimal convertedAmount = service.convert(request);
+        var convertedAmount = service.convert(request);
 
         assertEquals(AMOUNT, convertedAmount);
     }
@@ -63,7 +65,7 @@ class SqlCurrencyConversionServiceTest {
     @SneakyThrows
     @Test
     void GIVEN_sameCurrency_WHEN_convert_THEN_doNotCallTheAccessor() {
-        CurrencyConversionRequest request = buildRequestWithSameCurrency(AMOUNT);
+        var request = buildRequestWithSameCurrency(AMOUNT);
 
         service.convert(request);
 
@@ -105,7 +107,7 @@ class SqlCurrencyConversionServiceTest {
     }
 
     private CurrencyConversionRequest buildRequestWithSameCurrency(BigDecimal amount) {
-        Currency currency = Currency.GBP;
+        var currency = Currency.GBP;
         return CurrencyConversionRequest.builder()
                 .amount(amount)
                 .toCurrency(currency)

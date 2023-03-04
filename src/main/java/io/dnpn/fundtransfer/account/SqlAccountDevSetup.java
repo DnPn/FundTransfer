@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Create mock accounts for a development environment.
@@ -25,33 +24,33 @@ import java.util.List;
 public class SqlAccountDevSetup {
 
     @Bean
-    CommandLineRunner initAccountDatabase(AccountRepository accessor) {
+    CommandLineRunner initAccountDatabase(AccountRepository repository) {
         return args -> {
-            createMockAccounts(accessor);
-            logCreatedAccounts(accessor);
+            createMockAccounts(repository);
+            logCreatedAccounts(repository);
         };
     }
 
-    private void createMockAccounts(AccountRepository accessor) {
-        accessor.save(AccountEntity.builder()
+    private void createMockAccounts(AccountRepository repository) {
+        repository.save(AccountEntity.builder()
                 .id(123)
                 .balance(new BigDecimal("1234.56"))
                 .currency(Currency.USD)
                 .build());
 
-        accessor.save(AccountEntity.builder()
+        repository.save(AccountEntity.builder()
                 .id(456)
                 .balance(new BigDecimal("450001.78"))
                 .currency(Currency.GBP)
                 .build());
 
-        accessor.save(AccountEntity.builder()
+        repository.save(AccountEntity.builder()
                 .id(789)
                 .balance(new BigDecimal("1000000.00"))
                 .currency(Currency.JPY)
                 .build());
 
-        accessor.save(AccountEntity.builder()
+        repository.save(AccountEntity.builder()
                 .id(101)
                 .balance(new BigDecimal("41200"))
                 .currency(Currency.JPY)
@@ -59,8 +58,8 @@ public class SqlAccountDevSetup {
 
     }
 
-    private void logCreatedAccounts(AccountRepository accessor) {
-        final List<AccountEntity> accounts = accessor.findAll(Pageable.unpaged())
+    private void logCreatedAccounts(AccountRepository repository) {
+        final var accounts = repository.findAll(Pageable.unpaged())
                 .get()
                 .toList();
         log.info("Created the following mock accounts for the dev setup: {}", accounts);

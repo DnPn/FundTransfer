@@ -12,11 +12,14 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -70,7 +73,7 @@ class TransferControllerTest {
 
     @Test
     void WHEN_transfer_THEN_returnOkWithRequest() {
-        ResponseEntity<TransferApiResponse> response = controller.transfer(API_REQUEST);
+        var response = controller.transfer(API_REQUEST);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(API_REQUEST, response.getBody().request());

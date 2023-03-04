@@ -40,7 +40,7 @@ public class MdcFilter extends HttpFilter {
     }
 
     private String getOrCreateRequestId(HttpServletRequest request) {
-        String requestId = request.getHeader(REQUEST_ID_HEADER);
+        var requestId = request.getHeader(REQUEST_ID_HEADER);
 
         if (requestId == null || requestId.isBlank()) {
             requestId = UUID.randomUUID().toString();

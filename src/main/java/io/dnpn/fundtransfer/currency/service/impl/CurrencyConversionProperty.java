@@ -66,8 +66,8 @@ public class CurrencyConversionProperty {
      * @return the timeout duration.
      */
     public Duration getApiRequestTimeout() {
-        final String propertyName = CurrencyConversionProperty.API_REQUEST_TIMEOUT;
-        final String timeoutAsString = environment.getProperty(propertyName);
+        final var propertyName = CurrencyConversionProperty.API_REQUEST_TIMEOUT;
+        final var timeoutAsString = environment.getProperty(propertyName);
         return Optional.ofNullable(timeoutAsString)
                 .map(value -> parseLong(value, propertyName))
                 .map(Duration::ofMillis)

@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +48,7 @@ class AccountControllerTest {
                 .when(service)
                 .getById(ID_ACCOUNT_A);
 
-        ResponseEntity<Account> response = controller.getById(ID_ACCOUNT_A);
+        var response = controller.getById(ID_ACCOUNT_A);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());

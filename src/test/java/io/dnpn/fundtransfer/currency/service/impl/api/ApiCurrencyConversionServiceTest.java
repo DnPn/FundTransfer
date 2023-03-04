@@ -170,7 +170,7 @@ class ApiCurrencyConversionServiceTest {
     void WHEN_convert_THEN_returnResult() {
         webServer.enqueue(createSuccessfulResponse());
 
-        BigDecimal result = service.convert(REQUEST);
+        var result = service.convert(REQUEST);
 
         assertEquals(EXPECTED_RESULT, result);
     }
